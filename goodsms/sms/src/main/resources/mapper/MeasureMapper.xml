@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.MeasureMapper">
+  <resultMap id="BaseResultMap" type="com.nice.good.model.Measure">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="measure_id" jdbcType="VARCHAR" property="measureId" />
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="m_group_code" jdbcType="VARCHAR" property="mGroupCode" />
+    <result column="m_group_name" jdbcType="VARCHAR" property="mGroupName" />
+    <result column="statement" jdbcType="VARCHAR" property="statement" />
+    <result column="creater" jdbcType="VARCHAR" property="creater" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="modifier" jdbcType="VARCHAR" property="modifier" />
+    <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+  </resultMap>
+</mapper>

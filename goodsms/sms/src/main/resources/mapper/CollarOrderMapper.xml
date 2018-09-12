@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.CollarOrderMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.wx_model.CollarOrder">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="order_code" jdbcType="VARCHAR" property="orderCode"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="show_room_id" jdbcType="INTEGER" property="showRoomId"/>
+        <result column="consignee_id" jdbcType="INTEGER" property="consigneeId"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="createtime" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime"/>
+        <result column="own_id" jdbcType="INTEGER" property="ownId"/>
+        <result column="operator_id" jdbcType="INTEGER" property="operatorId"/>
+        <result column="operator_type" jdbcType="INTEGER" property="operatorType"/>
+        <result column="distribution_mode" jdbcType="VARCHAR" property="distributionMode"/>
+        <result column="recipient" jdbcType="VARCHAR" property="recipient"/>
+        <result column="exhibition_room_id" jdbcType="INTEGER" property="exhibitionRoomId"/>
+        <result column="exhibition_room_name" jdbcType="VARCHAR" property="exhibitionRoomName"/>
+        <result column="seat_code" jdbcType="VARCHAR" property="seatCode"/>
+
+    </resultMap>
+
+    <select id="findStatusByOwnId" parameterType="Integer" resultType="Integer">
+            SELECT
+             DISTINCT
+                collar. STATUS
+            FROM
+                x_collar_order collar
+            WHERE
+                collar.own_id =#{ownId}
+    </select>
+
+
+    <select id="findCollarByOrderCode" resultMap="BaseResultMap">
+        select * from x_collar_order
+        where order_code=#{orderCode}
+
+    </select>
+
+
+    <select id="selectListByParams" resultMap="BaseResultMap">
+        select * from x_collar_order
+        where 1=1
+        <if test="status!=null">
+            and status = #{status}
+        </if>
+        <if test="userId!=null">
+            and own_id = #{userId}
+        </if>
+        order by id desc
+
+    </select>
+
+    <select id="selectMaxId" resultType="Integer">
+        SELECT max(id)
+        FROM x_collar_order
+    </select>
+
+    <select id="selectCollar" resultMap="CollarOrderVoResultMap" parameterType="String">
+            SELECT
+            DISTINCT
+                collar.*
+            FROM
+                x_order_detail detail
+            LEFT JOIN x_collar_order collar ON   collar.id  = detail.order_id
+            WHERE
+                detail.order_type = 0 and collar.order_code =#{orderCode}
+            order by collar.createtime
+    </select>
+
+
+    <resultMap id="CollarOrderVoResultMap" type="com.nice.good.wx_model.CollarOrderVo">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="order_code" jdbcType="VARCHAR" property="orderCode"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="show_room_id" jdbcType="INTEGER" property="showRoomId"/>
+        <result column="consignee_id" jdbcType="INTEGER" property="consigneeId"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="createtime" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime"/>
+        <result column="own_id" jdbcType="INTEGER" property="ownId"/>
+        <result column="operator_id" jdbcType="INTEGER" property="operatorId"/>
+        <result column="operator_type" jdbcType="INTEGER" property="operatorType"/>
+        <result column="distribution_mode" jdbcType="VARCHAR" property="distributionMode"/>
+        <result column="recipient" jdbcType="VARCHAR" property="recipient"/>
+        <result column="exhibition_room_id" jdbcType="INTEGER" property="exhibitionRoomId"/>
+        <result column="exhibition_room_name" jdbcType="VARCHAR" property="exhibitionRoomName"/>
+
+    </resultMap>
+
+    <update id="collarOrderUpdate">
+           UPDATE x_collar_order
+            SET status = 2
+            where order_code =#{orderCode}
+    </update>
+
+    <update id="collarOrderRepayUpdate">
+        UPDATE x_collar_order
+        SET status = 4
+        where order_code =#{orderCode}
+    </update>
+
+    <update id="updateById">
+        UPDATE x_collar_order
+        SET status =#{status}
+        WHERE
+            id = #{id}
+    </update>
+
+    <delete id="deleteByOrderCode" parameterType="String">
+        DELETE FROM x_collar_order WHERE order_code=#{orderCode}
+    </delete>
+</mapper>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.miniprogram.dao.OrderDetailMapper">
+  <resultMap id="BaseResultMap" type="com.nice.miniprogram.model.OrderDetail">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_type" jdbcType="TINYINT" property="orderType" />
+    <result column="order_id" jdbcType="INTEGER" property="orderId" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="chose_num" jdbcType="INTEGER" property="choseNum" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="creater" jdbcType="VARCHAR" property="creater" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="modifier" jdbcType="VARCHAR" property="modifier" />
+    <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime" />
+    <result column="seat_code" jdbcType="VARCHAR" property="seatCode" />
+    <result column="target_seat_code" jdbcType="VARCHAR" property="targetSeatCode" />
+    <result column="source_seat_code" jdbcType="VARCHAR" property="sourceSeatCode" />
+    <result column="is_feedback" jdbcType="TINYINT" property="isFeedback" />
+  </resultMap>
+
+  <insert id="batchInsert">
+    insert into x_order_detail
+    (order_type,order_id,status,sku_code,chose_num,remark,creater,createtime,modifier,modifytime,target_seat_code,source_seat_code )
+    values
+    <foreach item="item" index="index" collection="list" separator=",">
+      (#{item.orderType},#{item.orderId},#{item.status},#{item.skuCode},#{item.choseNum},#{item.remark},
+      #{item.creater},#{item.createtime},#{item.modifier},#{item.modifytime},#{item.targetSeatCode},#{item.sourceSeatCode})
+    </foreach>
+  </insert>
+
+  <select id="selectByParams" resultMap="BaseResultMap" parameterType="map" >
+    select * from x_order_detail
+    where 1 = 1
+    <if test="orderId !=null and orderId !=''">
+      AND order_id = #{orderId}
+    </if>
+    <if test="status !=null and status !=''">
+      AND status = #{status}
+    </if>
+    <if test="skuCode !=null and skuCode !=''">
+      AND sku_code = #{skuCode}
+    </if>
+    <if test="orderType !=null and orderType !=''">
+      AND order_type = #{orderType}
+    </if>
+
+  </select>
+
+
+  <select id="queryByParams" parameterType="map" resultMap="BaseResultMap">
+    select det.* from x_order_detail det
+    left join x_collar_order col on col.id =det.order_id
+    where det.order_type=0
+    <if test="status!=null">
+      and det.status=#{status}
+    </if>
+    <if test="ownId!=null">
+      and col.own_id=#{ownId}
+    </if>
+  </select>
+
+  <update id="updateDetStatus">
+    UPDATE x_order_detail det
+    SET det. STATUS = 7
+    WHERE
+        det.order_id =#{orderId}
+    AND det.order_type = 1
+
+  </update>
+</mapper>

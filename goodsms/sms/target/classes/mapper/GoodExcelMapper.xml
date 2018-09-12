@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.GoodExcelMapper">
+  <resultMap id="BaseResultMap" type="com.nice.good.model.GoodExcel">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="excel_id" jdbcType="VARCHAR" property="excelId" />
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="checkout" jdbcType="VARCHAR" property="checkout" />
+    <result column="gooder_name" jdbcType="VARCHAR" property="gooderName" />
+    <result column="commodity_code" jdbcType="VARCHAR" property="commodityCode" />
+    <result column="good_code" jdbcType="VARCHAR" property="goodCode" />
+    <result column="good_model" jdbcType="VARCHAR" property="goodModel" />
+    <result column="good_name" jdbcType="VARCHAR" property="goodName" />
+    <result column="bulk" jdbcType="DOUBLE" property="bulk" />
+    <result column="net_weight" jdbcType="DOUBLE" property="netWeight" />
+    <result column="tare_weight" jdbcType="DOUBLE" property="tareWeight" />
+    <result column="rough_weight" jdbcType="DOUBLE" property="roughWeight" />
+    <result column="property" jdbcType="VARCHAR" property="property" />
+    <result column="period" jdbcType="DOUBLE" property="period" />
+    <result column="period_unit" jdbcType="VARCHAR" property="periodUnit" />
+    <result column="statement" jdbcType="VARCHAR" property="statement" />
+    <!--<result column="company_id" jdbcType="VARCHAR" property="companyId" />-->
+    <!--<result column="place_id" jdbcType="VARCHAR" property="placeId" />-->
+  </resultMap>
+</mapper>

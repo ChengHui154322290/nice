@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.ShowRoomInfoMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.wx_model.ShowRoomInfo">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="place_number" jdbcType="VARCHAR" property="placeNumber"/>
+        <result column="code" jdbcType="VARCHAR" property="code"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="equipment" jdbcType="VARCHAR" property="equipment"/>
+        <result column="style" jdbcType="VARCHAR" property="style"/>
+        <result column="area" jdbcType="VARCHAR" property="area"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="createtime" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime"/>
+        <result column="seat_code" jdbcType="VARCHAR" property="seatCode"/>
+        <result column="style" jdbcType="VARCHAR" property="styleName"/>
+    </resultMap>
+
+    <select id="findByCode" parameterType="String" resultMap="BaseResultMap">
+      SELECT
+          *
+      FROM
+          v_show_room_info
+      WHERE
+          code =#{code}
+  </select>
+
+    <select id="findAllCode" parameterType="String" resultType="string">
+        SELECT
+        code
+        FROM
+        v_show_room_info
+    </select>
+
+    <select id="findByConditions" parameterType="Map" resultMap="BaseResultMap">
+
+        SELECT
+        room.*,
+        style.name as styleName
+
+        FROM
+        v_show_room_info room
+        LEFT JOIN x_room_style style ON room.style = style.id
+        <where>
+            <if test="placeNumber!='' and placeNumber!=null">
+                AND room.place_number =#{placeNumber}
+            </if>
+
+            <if test="name!='' and name!=null">
+                AND room.name LIKE concat('%',#{name},'%')
+            </if>
+            <if test="code!='' and code!=null">
+                AND room.code LIKE concat('%',#{code},'%')
+            </if>
+            <if test="equipment!='' and equipment!=null">
+                AND room.equipment LIKE concat('%',#{equipment},'%')
+            </if>
+            <if test="remark!='' and remark!=null">
+                AND room.remark LIKE concat('%',#{remark},'%')
+            </if>
+            <if test="style!='' and style!=null">
+                AND room.style =#{style}
+            </if>
+        </where>
+        ORDER BY room.id DESC
+    </select>
+
+
+</mapper>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.miniprogram.dao.GoodImgMapper">
+  <resultMap id="BaseResultMap" type="com.nice.miniprogram.model.GoodImg">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="img_name" jdbcType="VARCHAR" property="imgName" />
+    <result column="img_url" jdbcType="VARCHAR" property="imgUrl" />
+    <result column="spu_code" jdbcType="VARCHAR" property="spuCode" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="creater" jdbcType="VARCHAR" property="creater" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="modifier" jdbcType="VARCHAR" property="modifier" />
+    <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="is_main" jdbcType="INTEGER" property="isMain" />
+  </resultMap>
+
+  <select id="getBySpu" parameterType="String" resultMap="BaseResultMap">
+    select * from x_good_img
+    where is_main=1
+    and spu_code = #{spuCode}
+  </select>
+
+  <select id="getBySku" parameterType="String" resultMap="BaseResultMap">
+    select * from x_good_img
+    where sku_code = #{skuCode} and (is_main=0 or is_main is null )
+  </select>
+
+  <select id="getSpuDetailImgs" parameterType="String" resultMap="BaseResultMap">
+    select * from x_good_img
+    where is_main=2
+    and spu_code = #{spuCode}
+  </select>
+
+  <select id="getListBySpu" resultMap="BaseResultMap" parameterType="String">
+    select * from x_good_img
+    where (is_main=1 or is_main=0 or is_main is null)
+    and spu_code = #{spuCode}
+  </select>
+</mapper>

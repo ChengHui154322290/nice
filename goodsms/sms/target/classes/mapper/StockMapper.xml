@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.StockMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.Stock">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="stock_id" jdbcType="VARCHAR" property="stockId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="gooder_code" jdbcType="VARCHAR" property="gooderCode"/>
+        <result column="org_code" jdbcType="VARCHAR" property="orgCode"/>
+        <result column="provider_code" jdbcType="VARCHAR" property="providerCode"/>
+        <result column="good_code" jdbcType="VARCHAR" property="goodCode"/>
+        <result column="commodity_code" jdbcType="VARCHAR" property="commodityCode"/>
+        <result column="good_name" jdbcType="VARCHAR" property="goodName"/>
+        <result column="now_num" jdbcType="INTEGER" property="nowNum"/>
+        <result column="use_num" jdbcType="INTEGER" property="useNum"/>
+        <result column="allot_num" jdbcType="INTEGER" property="allotNum"/>
+        <result column="pick_num" jdbcType="INTEGER" property="pickNum"/>
+        <result column="freeze_num" jdbcType="INTEGER" property="freezeNum"/>
+        <result column="create_id" jdbcType="VARCHAR" property="createId"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="modify_id" jdbcType="VARCHAR" property="modifyId"/>
+        <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate"/>
+        <result column="place_id" jdbcType="VARCHAR" property="placeId"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+    </resultMap>
+
+    <!-- 更新 库存表 中的‘现有量’。 货主编码、货品编码，确定一条库存表。  2018/06/19  10:25  rk -->
+    <update id="updateNowNumAndUseNum">
+        UPDATE s_stock
+        SET now_num = now_num + #{adjustQuantity},use_num=use_num+#{adjustQuantity}
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+    </update>
+
+    <select id="selectByGooderAndCode" resultType="String">
+        SELECT stock_id
+        FROM s_stock
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+    </select>
+    <update id="updateStockNowNum">
+        UPDATE s_stock
+        SET now_num = now_num - #{receiveNum}
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+    </update>
+
+    <update id="updateStockPickNum">
+        UPDATE s_stock
+        SET pick_num = ifnull(pick_num, 0) + #{totalRfidNum}
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+    </update>
+
+    <select id="selectNowNumByCode" resultType="Integer">
+        SELECT now_num
+        FROM s_stock
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+    </select>
+
+    <select id="selectUseNum" resultType="Integer">
+        SELECT use_num
+        FROM s_stock
+        WHERE stock_id = #{stockId} AND place_id = #{placeId}
+    </select>
+
+    <select id="selectFreezeNum" resultType="Integer">
+        SELECT freeze_num
+        FROM s_stock
+        WHERE stock_id = #{stockId} AND place_id = #{placeId}
+    </select>
+
+    <select id="selectByGooder" parameterType="String" resultMap="BaseResultMap">
+        SELECT *
+        FROM s_stock
+        WHERE gooder_code = #{gooderCode}
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+    </select>
+
+    <update id="updateAllotNumStock">
+        UPDATE s_stock
+        SET use_num = use_num - #{totalPickNum}, allot_num = allot_num + #{totalPickNum}
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+    </update>
+
+    <select id="selectPicNumByGooderAndCode" resultType="Integer">
+        SELECT pick_num
+        FROM s_stock
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+    </select>
+
+    <update id="updateOutStock">
+        UPDATE s_stock
+        SET now_num = now_num - #{sendNum}, allot_num = allot_num - #{sendNum}, pick_num = pick_num - #{sendNum}
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+    </update>
+
+    <update id="updateOutStockNum">
+        UPDATE s_stock
+        SET now_num = now_num - #{sendNum}, allot_num = allot_num - #{sendNum}
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+    </update>
+
+    <select id="selectUseNumByCode" resultType="Integer">
+        SELECT use_num
+        FROM s_stock
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+    </select>
+
+    <update id="addStockPickNum">
+        UPDATE s_stock
+        SET pick_num = pick_num + #{rfidNum}
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+    </update>
+    <update id="reduceStock">
+        UPDATE s_stock
+        SET now_num = now_num - #{sendNum}, allot_num = allot_num - #{sendNum}, pick_num = pick_num - #{sendNum}
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+    </update>
+
+    <update id="reduceStockNum">
+        UPDATE s_stock
+        SET now_num = now_num - #{sendNum}, allot_num = allot_num - #{sendNum}
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+    </update>
+
+    <select id="selectGooderCodes" resultType="String">
+        SELECT DISTINCT gooder_code
+        FROM s_stock
+        WHERE place_id = #{placeId}
+    </select>
+
+    <update id="updatePickNum">
+        UPDATE s_stock
+        SET pick_num = pick_num + #{pickNum}
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+    </update>
+
+    <select id="countStockNum" resultType="com.nice.good.vo.StockNumVo">
+        SELECT
+        ifnull(sum(now_num),0) as totalNowNum,
+        ifnull(sum(use_num),0) AS totalUseNum ,
+        ifnull(sum(allot_num),0) AS totalAllotNum ,
+        ifnull(sum(pick_num),0) AS totalPickNum,
+        ifnull(sum(freeze_num),0) AS totalFreezeNum
+        FROM s_stock
+        <where>
+            <if test="gooderCode!=null and gooderCode!=''">
+                AND gooder_code=#{gooderCode}
+            </if>
+            <if test="goodCode!=null and goodCode!=''">
+                AND good_code LIKE concat('%',#{goodCode},'%')
+            </if>
+            <if test="commodityCode!=null and commodityCode!=''">
+                AND commodity_code LIKE concat('%',#{commodityCode},'%')
+            </if>
+            <if test="goodName!=null and goodName!=''">
+                AND good_name LIKE concat('%',#{goodName},'%')
+            </if>
+            <if test="orgCode!=null and orgCode!=''">
+                AND org_code LIKE concat('%',#{orgCode},'%')
+            </if>
+            <if test="providerCode!=null and providerCode!=''">
+                AND provider_code LIKE concat('%',#{providerCode},'%')
+            </if>
+            <if test="providerCode!=null and providerCode!=''">
+                AND provider_code LIKE concat('%',#{providerCode},'%')
+            </if>
+            <if test="placeId!=null and placeId!=''">
+                AND place_id=#{placeId}
+            </if>
+            <if test="removeEmpty!=null and removeEmpty!=1">
+                AND now_num>0
+            </if>
+        </where>
+    </select>
+
+
+</mapper>

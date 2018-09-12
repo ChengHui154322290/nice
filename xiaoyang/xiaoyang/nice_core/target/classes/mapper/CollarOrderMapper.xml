@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.miniprogram.dao.CollarOrderMapper">
+  <resultMap id="BaseResultMap" type="com.nice.miniprogram.model.CollarOrder">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_code" jdbcType="VARCHAR" property="orderCode" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="show_room_id" jdbcType="INTEGER" property="showRoomId" />
+    <result column="consignee_id" jdbcType="INTEGER" property="consigneeId"/>
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="creater" jdbcType="VARCHAR" property="creater" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="modifier" jdbcType="VARCHAR" property="modifier" />
+    <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime" />
+    <result column="own_id" jdbcType="INTEGER" property="ownId" />
+    <result column="operator_id" jdbcType="INTEGER" property="operatorId" />
+    <result column="operator_type" jdbcType="INTEGER" property="operatorType" />
+    <result column="distribution_mode" jdbcType="VARCHAR" property="distributionMode" />
+    <result column="recipient" jdbcType="VARCHAR" property="recipient" />
+    <result column="exhibition_room_id" jdbcType="INTEGER" property="exhibitionRoomId" />
+    <result column="exhibition_room_name" jdbcType="VARCHAR" property="exhibitionRoomName" />
+    <result column="seat_code" jdbcType="VARCHAR" property="seatCode" />
+  </resultMap>
+
+  <select id="selectListByParams" resultMap="BaseResultMap">
+      select * from x_collar_order
+      where 1=1
+      <if test="statusList!=null" >
+        and status in
+          <foreach collection="statusList" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+      <if test="ownId!=null" >
+        and own_id = #{ownId}
+      </if>
+      <if test="operatorType !=null">
+        and operator_type = #{operatorType}
+      </if>
+      order by id desc,status asc
+      LIMIT #{start},#{size}
+
+  </select>
+
+  <select id="selectMaxId" resultType="Integer">
+        SELECT max(id)
+        FROM x_collar_order
+    </select>
+
+</mapper>

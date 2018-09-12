@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.miniprogram.dao.BespeakOrderMapper">
+  <resultMap id="BaseResultMap" type="com.nice.miniprogram.model.BespeakOrder">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_code" jdbcType="VARCHAR" property="orderCode" />
+    <result column="bespeak_time_start" jdbcType="TIMESTAMP" property="bespeakTimeStart" />
+    <result column="bespeak_time_end" jdbcType="TIMESTAMP" property="bespeakTimeEnd" />
+    <result column="show_room_id" jdbcType="INTEGER" property="showRoomId" />
+    <result column="own_id" jdbcType="INTEGER" property="ownId" />
+    <result column="operator_id" jdbcType="INTEGER" property="operatorId" />
+    <result column="operator_type" jdbcType="TINYINT" property="operatorType" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="creater" jdbcType="VARCHAR" property="creater" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="modifier" jdbcType="VARCHAR" property="modifier" />
+    <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime" />
+    <result column="exhibition_room_id" jdbcType="TIMESTAMP" property="exhibitionRoomId" />
+    <result column="exhibition_room_name" jdbcType="TIMESTAMP" property="exhibitionRoomName" />
+  </resultMap>
+    <select id="selectListByParams" resultMap="BaseResultMap">
+      select * from x_bespeak_order
+      where 1=1
+      <if test="status!=null" >
+        and status = #{status}
+      </if>
+      <if test="ownId!=null" >
+        and own_id = #{ownId}
+      </if>
+      order by id desc
+      limit #{start},#{size}
+    </select>
+
+  <select id="selectMaxId" resultType="Integer">
+        SELECT max(id)
+        FROM x_bespeak_order
+    </select>
+
+  <select id="getListByStartTime" resultMap="BaseResultMap" parameterType="Map">
+    select * from x_bespeak_order
+    where bespeak_time_start <![CDATA[ <= ]]> #{startTime}
+    and status = 0
+  </select>
+</mapper>

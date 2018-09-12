@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.SeatStockMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.SeatStock">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="stock_id" jdbcType="VARCHAR" property="stockId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="gooder_code" jdbcType="VARCHAR" property="gooderCode"/>
+        <result column="org_code" jdbcType="VARCHAR" property="orgCode"/>
+        <result column="provider_code" jdbcType="VARCHAR" property="providerCode"/>
+        <result column="good_code" jdbcType="VARCHAR" property="goodCode"/>
+        <result column="seat_code" jdbcType="VARCHAR" property="seatCode"/>
+        <result column="commodity_code" jdbcType="VARCHAR" property="commodityCode"/>
+        <result column="good_name" jdbcType="VARCHAR" property="goodName"/>
+        <result column="now_num" jdbcType="INTEGER" property="nowNum"/>
+        <result column="use_num" jdbcType="INTEGER" property="useNum"/>
+        <result column="allot_num" jdbcType="INTEGER" property="allotNum"/>
+        <result column="pick_num" jdbcType="INTEGER" property="pickNum"/>
+        <result column="freeze_num" jdbcType="INTEGER" property="freezeNum"/>
+        <result column="freeze_status" jdbcType="INTEGER" property="freezeStatus"/>
+        <result column="create_id" jdbcType="VARCHAR" property="createId"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="modify_id" jdbcType="VARCHAR" property="modifyId"/>
+        <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate"/>
+        <result column="place_id" jdbcType="VARCHAR" property="placeId"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+    </resultMap>
+
+
+    <!-- 更新 库位库存表 中的‘现有量’。 货主编码、货品编码、库位编码，确定一条库位库存信息。  2018/06/19 9:47 rk  -->
+    <update id="updateNowNumAndUseNum">
+        UPDATE s_seat_stock
+        SET now_num = now_num + #{adjustQuantity},use_num = use_num+#{adjustQuantity}
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}
+              AND seat_code = #{seatCode}
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+    </update>
+
+    <select id="selectStockId" resultType="string">
+        SELECT stock_id
+        FROM s_seat_stock
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode} AND seat_code = #{seatCode}
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+    </select>
+
+    <select id="findBySeatCode" resultMap="BaseResultMap">
+        SELECT *
+        FROM s_seat_stock
+        WHERE  seat_code = #{seatCode}
+        and   good_code = #{goodCode}
+    </select>
+
+    <update id="updateSeatStockNowNum">
+        UPDATE s_seat_stock
+        SET now_num = now_num - #{receiveNum}
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode} AND seat_code = #{seatCode}
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+    </update>
+
+
+    <update id="removeSeatStockAllotNum">
+        UPDATE s_seat_stock
+        SET now_num = now_num + #{pickNum}, use_num = use_num + #{pickNum}
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode} AND seat_code = #{seatCode}
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+    </update>
+
+
+    <select id="selectAllGood" resultMap="BaseResultMap">
+        SELECT *
+        FROM s_seat_stock
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode} AND use_num > 0
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+    </select>
+
+    <select id="selectBySeatCode" resultMap="BaseResultMap">
+        SELECT *
+        FROM s_seat_stock
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode} AND seat_code = #{tempSeatCode}
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+    </select>
+
+    <update id="updateSeatStockAllotNum">
+        UPDATE s_seat_stock
+        SET allot_num = allot_num - #{pickNum}
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode} AND seat_code = #{seatCode}
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+    </update>
+
+    <update id="updateOutSendNum">
+        UPDATE s_seat_stock
+        SET now_num = now_num - #{pickNum}, allot_num = allot_num - #{pickNum}
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode} AND seat_code = #{seatCode}
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+
+    </update>
+
+    <update id="reduceSeatStockUseNum">
+        UPDATE s_seat_stock
+        SET now_num = now_num - #{allotNum}, use_num = use_num - #{allotNum}
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode} AND seat_code = #{seatCode}
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+    </update>
+
+    <update id="addGoalSeatStockAllotNum">
+        UPDATE s_seat_stock
+        SET now_num = now_num + #{allotNum}, allot_num = allot_num + #{allotNum}
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode} AND seat_code = #{seatCode}
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+    </update>
+
+    <update id="addGoalSeatStockPickNum">
+        UPDATE s_seat_stock
+        SET pick_num = pick_num + #{rfidNum}
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode} AND seat_code = #{seatCode}
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+    </update>
+
+    <update id="reduceGoalSeatStock">
+        UPDATE s_seat_stock
+        SET now_num = now_num - #{rfidNum}, allot_num = allot_num - #{rfidNum}, pick_num = pick_num - #{rfidNum}
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode} AND seat_code = #{seatCode}
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+    </update>
+
+    <update id="reduceGoalSeatStockNum">
+        UPDATE s_seat_stock
+        SET now_num = now_num - #{pickNum}, allot_num = allot_num - #{pickNum}
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode} AND seat_code = #{seatCode}
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+    </update>
+
+    <select id="selectSeatCodes" resultType="String">
+        SELECT seat_code
+        FROM s_seat_stock
+        WHERE now_num &gt; 0 AND place_id = #{placeId}
+    </select>
+
+
+
+    <update id="updatePickNum">
+        UPDATE s_seat_stock
+        SET pick_num = pick_num + #{pickNum}
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode} AND seat_code = #{seatCode} AND allot_num > 0
+              AND org_code = #{orgCode} AND provider_code = #{providerCode} AND place_id = #{placeId}
+    </update>
+
+
+    <select id="selectNowNumByCode" resultType="Integer">
+        SELECT now_num
+        FROM s_seat_stock
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}
+        AND org_code = #{orgCode} AND provider_code = #{providerCode} AND seat_code=#{seatCode} AND place_id = #{placeId}
+    </select>
+
+    <select id="selectUseNumByCode" resultType="Integer">
+        SELECT use_num
+        FROM s_seat_stock
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}
+        AND org_code = #{orgCode} AND provider_code = #{providerCode} AND seat_code=#{seatCode} AND place_id = #{placeId}
+    </select>
+
+
+    <select id="selectAllotNumByCode" resultType="Integer">
+        SELECT allot_num
+        FROM s_seat_stock
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}
+        AND org_code = #{orgCode} AND provider_code = #{providerCode} AND seat_code=#{seatCode} AND place_id = #{placeId}
+    </select>
+
+    <select id="selectFreezeNumByCode" resultType="Integer">
+        SELECT pick_num
+        FROM s_seat_stock
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}
+        AND org_code = #{orgCode} AND provider_code = #{providerCode} AND seat_code=#{seatCode} AND place_id = #{placeId}
+    </select>
+
+
+    <select id="selectPickNumByCode" resultType="Integer">
+        SELECT pick_num
+        FROM s_seat_stock
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}
+        AND org_code = #{orgCode} AND provider_code = #{providerCode} AND seat_code=#{seatCode} AND place_id = #{placeId}
+    </select>
+
+
+    <select id="countSeatNum" resultType="com.nice.good.vo.StockNumVo">
+        SELECT
+        ifnull(sum(now_num),0) as totalNowNum,
+        ifnull(sum(use_num),0) AS totalUseNum ,
+        ifnull(sum(allot_num),0) AS totalAllotNum ,
+        ifnull(sum(pick_num),0) AS totalPickNum,
+        ifnull(sum(freeze_num),0) AS totalFreezeNum
+        FROM s_seat_stock
+        <where>
+            <if test="gooderCode!=null and gooderCode!=''">
+                AND gooder_code=#{gooderCode}
+            </if>
+            <if test="goodCode!=null and goodCode!=''">
+                AND good_code LIKE concat('%',#{goodCode},'%')
+            </if>
+            <if test="commodityCode!=null and commodityCode!=''">
+                AND commodity_code LIKE concat('%',#{commodityCode},'%')
+            </if>
+            <if test="goodName!=null and goodName!=''">
+                AND good_name LIKE concat('%',#{goodName},'%')
+            </if>
+            <if test="orgCode!=null and orgCode!=''">
+                AND org_code LIKE concat('%',#{orgCode},'%')
+            </if>
+            <if test="providerCode!=null and providerCode!=''">
+                AND provider_code LIKE concat('%',#{providerCode},'%')
+            </if>
+            <if test="seatCode!=null and seatCode!=''">
+                AND seat_code LIKE concat('%',#{seatCode},'%')
+            </if>
+            <if test="placeId!=null and placeId!=''">
+                AND place_id=#{placeId}
+            </if>
+            <if test="removeEmpty!=null and removeEmpty==1">
+                AND now_num>0
+            </if>
+        </where>
+    </select>
+
+    <select id="findByStockId" parameterType="String" resultMap="BaseResultMap">
+            SELECT
+                *
+            FROM
+                s_seat_stock seat
+            LEFT JOIN x_good_sku sku ON seat.good_code = sku.sku_code
+            WHERE
+                seat.stock_id=#{stockId}
+            ORDER BY
+                seat.use_num
+    </select>
+
+    <select id="getByParams" resultMap="BaseResultMap" parameterType="map">
+        select s.* from s_seat_stock s
+        left join i_store_seat i on i.seat_code = s.seat_code
+        where 1=1
+        <if test="goodCode!=null and goodCode!=''">
+            and s.good_code = #{goodCode}
+        </if>
+        <if test="gooderCode!=null and gooderCode!=''">
+            and s.gooder_code = #{gooderCode}
+        </if>
+        <if test="placeNumber!=null and placeNumber!=''">
+            and i.place_number = #{placeNumber}
+        </if>
+        <if test="seatCode!=null and seatCode!=''">
+            and s.seat_code = #{seatCode}
+        </if>
+        order by s.use_num
+    </select>
+</mapper>

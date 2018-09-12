@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.GooderConfigMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.GooderConfig">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="config_id" jdbcType="VARCHAR" property="configId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="no_po_receive" jdbcType="VARCHAR" property="noPoReceive"/>
+        <result column="beyond_verify" jdbcType="INTEGER" property="beyondVerify"/>
+        <result column="beyond_ratio" jdbcType="DOUBLE" property="beyondRatio"/>
+        <result column="is_quality" jdbcType="INTEGER" property="isQuality"/>
+        <result column="rfid_gather" jdbcType="INTEGER" property="rfidGather"/>
+        <result column="in_quality_seat" jdbcType="VARCHAR" property="inQualitySeat"/>
+        <result column="out_accept_seat" jdbcType="VARCHAR" property="outAcceptSeat"/>
+        <result column="bad_accept_seat" jdbcType="VARCHAR" property="badAcceptSeat"/>
+        <result column="out_wait_seat" jdbcType="VARCHAR" property="outWaitSeat"/>
+        <result column="put_strategy" jdbcType="VARCHAR" property="putStrategy"/>
+        <result column="allot_strategy" jdbcType="VARCHAR" property="allotStrategy"/>
+        <result column="run_rule" jdbcType="INTEGER" property="runRule"/>
+        <result column="stock_run" jdbcType="VARCHAR" property="stockRun"/>
+        <result column="auto_deal" jdbcType="INTEGER" property="autoDeal"/>
+        <result column="mix_box_num" jdbcType="INTEGER" property="mixBoxNum"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="createtime" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime"/>
+        <result column="gooder_id" jdbcType="VARCHAR" property="gooderId"/>
+        <result column="place_id" jdbcType="VARCHAR" property="placeId"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+    </resultMap>
+
+    <delete id="deleteByGooderId" parameterType="String">
+        DELETE FROM n_gooder_config
+        WHERE gooder_id = #{gooderId}
+    </delete>
+
+    <select id="selectConfigByGooderIdAndPlaceId"  resultMap="BaseResultMap">
+        SELECT *
+        FROM n_gooder_config
+        WHERE gooder_id = #{gooderId} AND place_id=#{placeId}
+    </select>
+
+    <select id="selectByGooderCodeAndPlaceId"  resultMap="BaseResultMap">
+        SELECT *
+        FROM n_gooder_config
+        WHERE gooder_id = (SELECT gooder_id
+                            FROM n_gooder
+                            WHERE gooder_code = #{gooderCode}) and place_id=#{placeId}
+    </select>
+</mapper>

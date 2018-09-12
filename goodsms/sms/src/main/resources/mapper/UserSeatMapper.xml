@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.UserSeatMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.UserSeat">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="place_id" jdbcType="VARCHAR" property="placeId"/>
+        <result column="seat_code" jdbcType="VARCHAR" property="seatCode"/>
+        <result column="create_id" jdbcType="VARCHAR" property="createId"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="modify_id" jdbcType="VARCHAR" property="modifyId"/>
+        <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate"/>
+    </resultMap>
+
+    <select id="selectSeatCodeByUserName" resultType="String">
+        SELECT seat_code FROM a_user_seat WHERE username=#{userName} AND place_id=#{placeId}
+    </select>
+
+    <select id="findByseat" resultType="String">
+    SELECT seat_code FROM a_user_seat WHERE username=#{userName} and place_id=#{placeId}
+  </select>
+</mapper>

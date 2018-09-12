@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.SysUserMapper">
+  <resultMap id="BaseResultMap" type="com.nice.good.model.SysUser">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="user_id" jdbcType="VARCHAR" property="userId"></id>
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="modify_id" jdbcType="VARCHAR" property="modifyId" />
+    <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="create_id" jdbcType="VARCHAR" property="createId" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="user_type" jdbcType="VARCHAR" property="userType" />
+    <result column="org_code" jdbcType="VARCHAR" property="orgCode" />  <!-- organization 字段有改动，改成 org_code(组织编码)  2018/06/11  19:34  rk  -->
+    <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="qq_number" jdbcType="INTEGER" property="qqNumber" />
+    <result column="is_ok" jdbcType="VARCHAR" property="isOk" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+  </resultMap>
+
+  <!-- organization 字段有改动，改成 org_code(组织编码)  2018/06/11  19:34  rk  -->
+  <select id="login" resultMap="BaseResultMap">
+    SELECT user_id, id, username, name, password, modify_id, modify_date, remark, create_id, create_date, user_type,
+           org_code, mobile_phone, phone, sex, email, qq_number, is_ok, address
+    FROM a_sys_user
+    WHERE username=#{username} AND password = #{password}
+  </select>
+
+  <!-- 通过 username 查询 a_sys_user 表中是否含有 username , 若无对应的 username ，则给出相应的提示。  2018/05/19 11:07 rk -->
+  <select id="checkUsername" parameterType="String" resultType="String">
+    SELECT username FROM a_sys_user WHERE username=#{username}
+  </select>
+
+  <select id="checkIdByUsername" parameterType="String" resultType="String">
+    SELECT user_id FROM a_sys_user WHERE username=#{username}
+  </select>
+
+  <!-- 查询role_id -->
+  <select id="queryRoleId" parameterType="String" resultType="String">
+    SELECT role_id FROM a_user_role WHERE username=#{username}
+  </select>
+
+  <!-- 通过 username 删除用户信息 -->
+  <delete id="deleteUserByUsername" parameterType="String">
+    DELETE FROM a_sys_user WHERE username=#{username}
+  </delete>
+
+  <!-- organization 字段有改动，改成 org_code(组织编码)  2018/06/11  19:34   rk  -->
+  <!-- 模糊匹配，通过 username、name、user_type、org_code、is_ok 查询 a_sys_user -->
+  <select id="selectByFiveParameter" resultMap="BaseResultMap">
+    SELECT user_id, id, username, name, password, modify_id, modify_date, remark, create_id, create_date,
+            user_type, org_code, mobile_phone, phone, sex,email, qq_number, is_ok, address
+    FROM a_sys_user
+    <where>
+      <if test="username !='' and username !=null">
+        username LIKE CONCAT('%', #{username}, '%')
+      </if>
+      <if test="name !='' and name !=null">
+        AND name LIKE CONCAT('%', #{name}, '%')
+      </if>
+      <if test="userType !='' and userType !=null">
+        AND user_type LIKE CONCAT('%', #{userType}, '%')
+      </if>
+      <if test="orgCode !='' and orgCode !=null">
+        AND org_code LIKE CONCAT('%', #{orgCode}, '%')
+      </if>
+      <if test="isOk !='' and isOk !=null">
+        AND is_ok LIKE CONCAT('%', #{isOk}, '%')
+      </if>
+    </where>
+      ORDER BY  id DESC
+  </select>
+
+    <select id="selecUserTypeByUserName" parameterType="String" resultType="String">
+        SELECT user_type FROM a_sys_user WHERE username=#{username}
+    </select>
+
+
+</mapper>

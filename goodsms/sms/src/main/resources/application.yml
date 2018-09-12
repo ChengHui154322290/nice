@@ -1,0 +1,92 @@
+server:
+  port: 8089
+  use-forward-headers: true
+  tomcat:
+    remote_ip_header: x-forwarded-for
+
+
+spring:
+    datasource:
+        # 配置druid数据库连接池
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        filters: stat
+        maxActive: 20
+        initialSize: 1
+        maxWait: 60000
+        minIdle: 1
+        timeBetweenEvictionRunsMillis: 60000
+        minEvictableIdleTimeMillis: 300000
+        validationQuery: select 'x'
+        testWhileIdle: true
+        testOnBorrow: false
+        testOnReturn: false
+        poolPreparedStatements: true
+        maxOpenPreparedStatements: 20
+    redis:
+        host: 127.0.0.1
+  #     password: nice1234
+        port: 6379
+        database: 4
+        max-idle: 100
+        min-idle: 1
+        max-active: 1000
+        max-wait: -1
+    profiles:
+        active: dev
+
+
+#图片上传大小设置
+    servlet:
+        multipart:
+          #单个文件上传大小限制
+          max-file-size: 10Mb
+          #多个文件总大小限制
+          max-request-size: 30Mb
+
+
+
+#pagehelper分页插件
+pagehelper:
+    helperDialect: mysql
+    reasonable: true
+    supportMethodsArguments: true
+    pageSizeZero: true
+    params: count=countSql
+
+---
+# 开发环境配置
+server:
+  port: 8089
+  use-forward-headers: true
+  tomcat:
+    remote_ip_header: x-forwarded-for
+spring:
+  profiles: dev
+  datasource:
+      url: jdbc:mysql://127.0.0.1:3306/nice_record?useSSL=false
+      username: root
+      password: 123456
+---
+# 测试环境配置
+server:
+  port: 8090
+  use-forward-headers: true
+  tomcat:
+    remote_ip_header: x-forwarded-for
+spring:
+  profiles: test
+  datasource:
+      url: jdbc:mysql://127.0.0.1:3306/nice_test?useSSL=false
+      username: root
+      password: 123456
+
+---
+# 仓库环境配置
+server.port: 8091
+spring:
+  profiles: depot
+  datasource:
+      url: jdbc:mysql://127.0.0.1:3306/nice_depot?useSSL=false
+      username: root
+      password: 123456

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.UserMapper">
+  <resultMap id="BaseResultMap" type="com.nice.good.wx_model.User">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="picture" jdbcType="VARCHAR" property="picture" />
+    <result column="sys_user_id" jdbcType="VARCHAR" property="sysUserId" />
+    <result column="anchor_platform" jdbcType="VARCHAR" property="anchorPlatform" />
+    <result column="anchor_uid" jdbcType="VARCHAR" property="anchorUid" />
+    <result column="anchor_true_name" jdbcType="VARCHAR" property="anchorTrueName" />
+    <result column="anchor_phone" jdbcType="VARCHAR" property="anchorPhone" />
+    <result column="anchor_style" jdbcType="VARCHAR" property="anchorStyle" />
+    <result column="fans_age_group" jdbcType="VARCHAR" property="fansAgeGroup" />
+    <result column="fans_consuming_ability" jdbcType="VARCHAR" property="fansConsumingAbility" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="creater" jdbcType="VARCHAR" property="creater" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="modifier" jdbcType="VARCHAR" property="modifier" />
+    <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime" />
+    <result column="user_type" jdbcType="TINYINT" property="userType" />
+    <result column="if_anchor" jdbcType="INTEGER" property="ifAnchor" />
+    <result column="login_num" jdbcType="INTEGER" property="loginNum" />
+    <result column="anchor_sex" jdbcType="TINYINT" property="anchorSex" />
+    <result column="nick_name" jdbcType="LONGVARCHAR" property="nickName" />
+  </resultMap>
+  
+  <select id="findAllAccount" resultType="String">
+    SELECT account FROM x_user
+  </select>
+
+  <select id="findIdByAccount" resultType="INTEGER">
+    SELECT id FROM x_user where account=#{account}
+  </select>
+
+</mapper>

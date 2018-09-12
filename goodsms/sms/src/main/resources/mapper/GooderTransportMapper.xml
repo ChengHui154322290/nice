@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.GooderTransportMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.GooderTransport">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="trans_id" jdbcType="VARCHAR" property="transId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="carrier_code" jdbcType="VARCHAR" property="carrierCode"/>
+        <result column="carrier_name" jdbcType="VARCHAR" property="carrierName"/>
+        <result column="carrier_id" jdbcType="VARCHAR" property="carrierId"/>
+        <result column="ord_print" jdbcType="VARCHAR" property="ordPrint"/>
+        <result column="hot_print" jdbcType="VARCHAR" property="hotPrint"/>
+        <result column="hot_account" jdbcType="VARCHAR" property="hotAccount"/>
+        <result column="hot_code" jdbcType="VARCHAR" property="hotCode"/>
+        <result column="autcode_one" jdbcType="VARCHAR" property="autcodeOne"/>
+        <result column="autcode_two" jdbcType="VARCHAR" property="autcodeTwo"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="createtime" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime"/>
+        <result column="gooder_id" jdbcType="VARCHAR" property="gooderId"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    </resultMap>
+    <delete id="deleteByGooderId" parameterType="String">
+        DELETE FROM n_gooder_transport
+        WHERE gooder_id = #{gooderId}
+    </delete>
+    <select id="selectTransportByCarrierId" parameterType="String" resultType="String">
+        SELECT trans_id
+        FROM n_gooder_transport
+        WHERE carrier_id=#{carrierId}
+    </select>
+
+    <select id="selectTransByGooderId" parameterType="String" resultMap="BaseResultMap">
+        SELECT * FROM n_gooder_transport WHERE gooder_id=#{gooderId}
+    </select>
+</mapper>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.miniprogram.dao.ShowRoomInfoMapper">
+  <resultMap id="BaseResultMap" type="com.nice.miniprogram.model.ShowRoomInfo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="place_number" jdbcType="VARCHAR" property="placeNumber" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="equipment" jdbcType="VARCHAR" property="equipment" />
+    <result column="style" jdbcType="VARCHAR" property="style" />
+    <result column="area" jdbcType="VARCHAR" property="area" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="creater" jdbcType="VARCHAR" property="creater" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="modifier" jdbcType="VARCHAR" property="modifier" />
+    <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime" />
+    <result column="seat_code" jdbcType="VARCHAR" property="seatCode" />
+    <result column="picture" jdbcType="VARCHAR" property="picture" />
+  </resultMap>
+
+  <select id="getListByParams" parameterType="map" resultMap="BaseResultMap">
+    select * from v_show_room_info
+    where 1=1
+    <if test="placeNumber!=null and placeNumber!=''" >
+      and place_number = #{placeNumber}
+    </if>
+  </select>
+
+  <select id="queryPlaceNumber" resultType="String" parameterType="INTEGER">
+    select place_number from v_show_room_info
+    where id = #{showRoomId}
+  </select>
+</mapper>

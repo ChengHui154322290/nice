@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.StoreAreaMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.StoreArea">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="area_id" jdbcType="VARCHAR" property="areaId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="place_number" jdbcType="VARCHAR" property="placeNumber"/>
+        <result column="area_code" jdbcType="VARCHAR" property="areaCode"/>
+        <result column="area_name" jdbcType="VARCHAR" property="areaName"/>
+        <result column="area_type" jdbcType="VARCHAR" property="areaType"/>
+        <result column="statement" jdbcType="VARCHAR" property="statement"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="createtime" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime"/>
+        <result column="place_id" jdbcType="VARCHAR" property="placeId"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+    </resultMap>
+
+    <select id="findIdByAreaCode" resultType="String">
+        SELECT area_id
+        FROM i_store_area
+        WHERE area_code = #{areaCode} AND place_id = #{placeId}
+    </select>
+
+
+
+    <select id="selectAreaCodeByPlaceId"  parameterType="String" resultType="String">
+        SELECT DISTINCT area_code
+        FROM i_store_area
+        WHERE place_id = #{placeId}
+    </select>
+
+    <select id="findAllSeatCode"  resultType="String">
+        SELECT seat_code
+        FROM i_store_seat
+        WHERE area_code = (SELECT area_code
+                             FROM i_store_area
+                             WHERE
+                                 area_id = #{areaId}) AND place_id = #{placeId}
+    </select>
+    <select id="findSeatCode"  parameterType="String" resultType="String">
+        SELECT seat_code FROM o_receive_detail WHERE place_id=#{placeId} UNION SELECT seat_code FROM s_seat_stock WHERE place_id=#{placeId}
+    </select>
+
+
+    <resultMap id="PlaceAreaVoResultMap" type="com.nice.good.vo.PlaceAreaVo">
+        <id column="area_id" jdbcType="VARCHAR" property="areaId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="exhibition" jdbcType="VARCHAR" property="exhibition"/>
+        <result column="place_number" jdbcType="VARCHAR" property="placeNumber"/>
+        <result column="area_code" jdbcType="VARCHAR" property="areaCode"/>
+        <result column="area_name" jdbcType="VARCHAR" property="areaName"/>
+        <result column="area_type" jdbcType="VARCHAR" property="areaType"/>
+        <result column="statement" jdbcType="VARCHAR" property="statement"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="createtime" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime"/>
+    </resultMap>
+
+
+    <select id="findByConditions" resultMap="PlaceAreaVoResultMap">
+        SELECT area.*,place.exhibition FROM i_store_area AS area LEFT JOIN a_sys_place AS place ON area.place_number =
+        place.place_number
+        <where>
+            <if test="placeNumber!='' and placeNumber!=null">
+                AND area.place_number = #{placeNumber}
+            </if>
+            <if test="areaType!='' and areaType!=null">
+                AND area.area_type =#{areaType}
+            </if>
+            <if test="areaCode!='' and areaCode!=null">
+                AND area.area_code LIKE concat('%',#{areaCode},'%')
+            </if>
+            <if test="areaName!='' and areaName!=null">
+                AND area.area_name LIKE concat('%',#{areaName},'%')
+            </if>
+            <if test="placeId!='' and placeId!=null">
+                AND area.place_id =#{placeId}
+            </if>
+        </where>
+        ORDER BY area.id DESC
+    </select>
+
+    <!--库区选择-->
+    <resultMap id="AreaVoResultMap" type="com.nice.good.vo.AreaVo">
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="exhibition" jdbcType="VARCHAR" property="exhibition"/>
+        <result column="place_number" jdbcType="VARCHAR" property="placeNumber"/>
+        <result column="area_name" jdbcType="VARCHAR" property="areaName"/>
+        <result column="area_code" jdbcType="VARCHAR" property="areaCode"/>
+        <result column="area_type" jdbcType="INTEGER" property="areaType"/>
+    </resultMap>
+    <select id="chooseArea" parameterType="Map" resultMap="AreaVoResultMap">
+        SELECT area.id,place.exhibition,place.place_number, area.area_type,area.area_name ,area.area_code from
+        i_store_area as area LEFT JOIN a_sys_place as place ON area.place_number=place.place_number
+        <where>
+            <if test="placeNumber!=null and placeNumber!=''">
+                AND place.place_number = #{placeNumber}
+            </if>
+            <if test="areaType!=null and areaType!=''">
+                AND area.area_type LIKE concat('%',#{areaType},'%')
+            </if>
+            <if test="areaCode!=null and areaCode!=''">
+                AND area.area_code LIKE concat('%',#{areaCode},'%')
+            </if>
+            <if test="areaName!=null and areaName!=''">
+                AND area.area_name LIKE concat('%',#{areaName},'%')
+            </if>
+            <if test="placeId!=null and placeId!=''">
+                AND area.place_id =#{placeId}
+            </if>
+        </where>
+    </select>
+
+
+    <select id="selectAreaNameByCode" resultType="String">
+        SELECT area_name
+        FROM i_store_area
+        WHERE area_code = #{areaCode} AND place_id = #{placeId}
+    </select>
+
+    <select id="findAllAreaCode" resultType="String">
+        SELECT area_code
+        FROM i_store_area
+    </select>
+
+</mapper>

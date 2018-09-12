@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.OrderDetailMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.wx_model.OrderDetail">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="order_type" jdbcType="TINYINT" property="orderType"/>
+        <result column="order_id" jdbcType="INTEGER" property="orderId"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
+        <result column="chose_num" jdbcType="INTEGER" property="choseNum"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="createtime" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime"/>
+        <result column="seat_code" jdbcType="VARCHAR" property="seatCode"/>
+        <result column="target_seat_code" jdbcType="VARCHAR" property="targetSeatCode"/>
+        <result column="source_seat_code" jdbcType="VARCHAR" property="sourceSeatCode"/>
+        <result column="is_feedback" jdbcType="TINYINT" property="isFeedback"/>
+    </resultMap>
+
+
+    <select id="selectByOrderCode" parameterType="String" resultMap="BaseResultMap">
+            SELECT
+                del.*
+            FROM
+                x_order_detail del
+            WHERE
+                del.order_type = 0
+            AND del.order_id = (
+                SELECT
+                    ord.id
+                FROM
+                    x_collar_order ord
+                WHERE
+                    ord.order_code = #{orderCode}
+            )
+    </select>
+
+
+    <select id="findByOrderId" parameterType="Integer" resultMap="BaseResultMap">
+            SELECT
+                *
+            FROM
+                x_order_detail
+            WHERE
+                order_id =#{orderId}
+            AND order_type = 0
+    </select>
+
+    <select id="selectByParams" parameterType="Integer" resultMap="BaseResultMap">
+            SELECT
+                *
+            FROM
+                x_order_detail
+            WHERE
+                order_type = 1
+            AND order_id = #{orderId}
+    </select>
+
+    <select id="selectBespeakDetail" parameterType="Integer" resultMap="orderDetailMap">
+      SELECT
+          DISTINCT
+          spu.gooder_code as gooderCode,
+          sku.sku_code ,
+          sku.sku_name as skuName,
+          sku.good_color as goodColor,
+          sku.good_size as goodSize,
+          sku.normal_price as normalPrice,
+          detail.id,
+          detail.chose_num ,
+          detail.source_seat_code ,
+          detail.target_seat_code ,
+          detail.status,
+          detail.creater,
+          detail.createtime,
+          detail.modifier,
+          detail.modifytime,
+          detail.order_id,
+          style.name AS styleName,
+          category.name AS categoryName
+      FROM
+          x_order_detail detail
+      LEFT JOIN x_good_sku sku ON detail.sku_code = sku.sku_code
+      LEFT JOIN x_good_spu spu ON sku.spu_code = spu.spu_code
+      LEFT JOIN g_good_style style ON spu.style_id = style.id
+      LEFT JOIN g_good_category category  ON spu.category_id = category.id
+      WHERE detail.order_id=#{orderId}
+      order by  detail.createtime
+    </select>
+
+    <resultMap id="orderDetailMap" type="com.nice.good.wx_model.OrderDetailVo">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="order_type" jdbcType="TINYINT" property="orderType"/>
+        <result column="order_id" jdbcType="INTEGER" property="orderId"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
+        <result column="chose_num" jdbcType="INTEGER" property="choseNum"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="createtime" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime"/>
+        <result column="seat_code" jdbcType="VARCHAR" property="seatCode"/>
+        <result column="target_seat_code" jdbcType="VARCHAR" property="targetSeatCode"/>
+        <result column="source_seat_code" jdbcType="VARCHAR" property="sourceSeatCode"/>
+        <result column="is_feedback" jdbcType="TINYINT" property="isFeedback"/>
+        <result column="order_code" jdbcType="VARCHAR" property="orderCode"/>
+    </resultMap>
+
+    <update id="updateRepayDetail">
+        UPDATE x_order_detail detail
+        SET detail.STATUS =4
+        WHERE
+        detail.id =#{id}
+        and detail.order_type=0
+    </update>
+
+    <update id="collarOrderUpdateByOrderId">
+               UPDATE x_order_detail detail
+                SET detail.STATUS = 2
+                WHERE
+               detail.id =#{id}
+               and detail.order_type=0
+    </update>
+
+    <update id="collarOrderUpdate">
+            UPDATE x_order_detail detail
+            SET detail.status = 2
+            WHERE
+                detail.order_id = (
+             SELECT
+                        collar.id
+              FROM
+                        x_collar_order collar
+              WHERE
+                      collar.order_code =#{orderCode}
+                )
+    </update>
+
+    <update id="collarOrderRepayUpdate">
+        UPDATE x_order_detail detail
+        SET detail.STATUS = 4
+        WHERE
+        detail.order_id = (
+        SELECT
+        collar.id
+        FROM
+        x_collar_order collar
+        WHERE
+        collar.order_code =#{orderCode}
+        )
+    </update>
+
+    <delete id="deleteByBesOrderCode" parameterType="String">
+              DELETE
+            FROM
+                x_order_detail
+            WHERE
+                order_type = 1 and
+                order_id = (SELECT
+                    bes.id
+                FROM
+                    x_bespeak_order bes
+                WHERE
+                    bes.order_code =#{orderCode}
+                 )
+    </delete>
+
+    <delete id="deleteByCollarOrderCode" parameterType="String">
+        DELETE
+        FROM
+        x_order_detail
+        WHERE
+        order_type = 2 and
+        order_id = (SELECT
+        collar.id
+        FROM
+        x_collar_order collar
+        WHERE
+        collar.order_code =#{orderCode}
+        )
+    </delete>
+</mapper>

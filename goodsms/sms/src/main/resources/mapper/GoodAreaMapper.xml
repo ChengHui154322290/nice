@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.GoodAreaMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.GoodArea">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="area_id" jdbcType="VARCHAR" property="areaId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="area_type" jdbcType="VARCHAR" property="areaType"/>
+        <result column="area_name" jdbcType="VARCHAR" property="areaName"/>
+        <result column="area_code" jdbcType="VARCHAR" property="areaCode"/>
+        <result column="min_num" jdbcType="INTEGER" property="minNum"/>
+        <result column="max_num" jdbcType="INTEGER" property="maxNum"/>
+        <result column="fist_area" jdbcType="INTEGER" property="fistArea"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="createtime" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime"/>
+        <result column="good_id" jdbcType="VARCHAR" property="goodId"/>
+        <result column="place_id" jdbcType="VARCHAR" property="placeId"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+    </resultMap>
+    <delete id="deleteByGoodId">
+        DELETE FROM g_good_area
+        WHERE good_id = #{goodId} AND place_id = #{placeId}
+    </delete>
+
+    <select id="selectAreaByGoodIdAndPlaceId" parameterType="String" resultMap="BaseResultMap">
+        SELECT *
+        FROM g_good_area
+        WHERE good_id = #{goodId} AND place_id = #{placeId}
+        ORDER BY fist_area DESC
+    </select>
+
+
+    <select id="selectAreaCodeByGoodId" resultType="String">
+        SELECT area_code
+        FROM g_good_area
+        WHERE good_id = (SELECT good_id
+                         FROM g_good
+                         WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}) AND fist_area = #{fistArea} AND place_id=#{placeId}
+    </select>
+
+    <delete id="deleteAreaById">
+        DELETE FROM g_good_area
+        WHERE area_id = #{areaId} AND place_id=#{placeId}
+    </delete>
+
+    <select id="selectAreaCodeByGoodIdAndPlaceId" resultType="String">
+        SELECT area_code
+        FROM g_good_area
+        WHERE good_id = (SELECT good_id
+                         FROM g_good
+                         WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}) AND fist_area = 0 AND place_id=#{placeId}
+    </select>
+
+    <select id="selectAllAreaCodeByGoodId"  resultMap="BaseResultMap">
+        SELECT *
+        FROM g_good_area
+        WHERE good_id = #{goodId} AND place_id=#{placeId}
+        ORDER BY fist_area DESC
+    </select>
+</mapper>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.OutBaseMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.OutBase">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="base_id" jdbcType="VARCHAR" property="baseId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="send_code" jdbcType="VARCHAR" property="sendCode"/>
+        <result column="order_code" jdbcType="VARCHAR" property="orderCode"/>
+        <result column="org_code" jdbcType="VARCHAR" property="orgCode"/>
+        <result column="order_type" jdbcType="INTEGER" property="orderType"/>
+        <result column="type_name" jdbcType="VARCHAR" property="typeName"/>
+        <result column="priority" jdbcType="VARCHAR" property="priority"/>
+        <result column="wave_code" jdbcType="VARCHAR" property="waveCode"/>
+        <result column="gooder_code" jdbcType="VARCHAR" property="gooderCode"/>
+        <result column="order_status" jdbcType="INTEGER" property="orderStatus"/>
+        <result column="operator" jdbcType="VARCHAR" property="operator"/>
+        <result column="invoice_way" jdbcType="VARCHAR" property="invoiceWay"/>
+        <result column="carrier_code" jdbcType="VARCHAR" property="carrierCode"/>
+        <result column="waybill_code" jdbcType="VARCHAR" property="waybillCode"/>
+        <result column="print_time" jdbcType="TIMESTAMP" property="printTime"/>
+        <result column="order_time" jdbcType="TIMESTAMP" property="orderTime"/>
+        <result column="import_time" jdbcType="TIMESTAMP" property="importTime"/>
+        <result column="pay_time" jdbcType="TIMESTAMP" property="payTime"/>
+        <result column="deliver_time" jdbcType="TIMESTAMP" property="deliverTime"/>
+        <result column="hang_up" jdbcType="INTEGER" property="hangUp"/>
+        <result column="print_num" jdbcType="INTEGER" property="printNum"/>
+        <result column="create_id" jdbcType="VARCHAR" property="createId"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="modify_id" jdbcType="VARCHAR" property="modifyId"/>
+        <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate"/>
+        <result column="place_id" jdbcType="VARCHAR" property="placeId"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+    </resultMap>
+
+    <select id="selectBaseByCarrierCode" parameterType="String" resultType="String">
+        SELECT base_id
+        FROM d_out_base
+        WHERE carrier_code = #{carrierCode}
+    </select>
+    <select id="selectMaxId" resultType="Integer">
+        SELECT MAX(id)
+        FROM d_out_base
+    </select>
+
+    <select id="selectSendCodeByBaseId" resultType="String">
+        SELECT send_code
+        FROM d_out_base
+        WHERE base_id = #{baseId}
+    </select>
+
+    <update id="updateStatus">
+        UPDATE d_out_base
+        SET order_status = #{status}
+        WHERE base_id = #{baseId}
+    </update>
+
+    <!-- rk  2018/05/02 -->
+    <select id="findSendCodeByMaxId" resultMap="BaseResultMap">
+        SELECT *
+        FROM d_out_base
+        WHERE id = (SELECT MAX(id)
+                    FROM d_out_base)
+    </select>
+
+
+    <select id="selectBaseIdBySendCode" parameterType="String" resultType="String">
+        SELECT base_id
+        FROM d_out_base
+        WHERE send_code = #{sendCode}
+    </select>
+
+    <select id="selectBySenCode" parameterType="String" resultMap="BaseResultMap">
+        SELECT *
+        FROM d_out_base
+        WHERE send_code = #{sendCode}
+    </select>
+
+    <select id="selectByConditionMap" parameterType="map" resultMap="BaseResultMap">
+        SELECT
+        DISTINCT
+        base.*
+        FROM
+        d_out_base AS base
+        LEFT JOIN d_out_detail AS detail ON base.base_id = detail.base_id
+        <where>
+            <if test="orderStatus!=null ">
+                AND  base.order_status = #{orderStatus}
+            </if>
+            <if test="gooderCode!=null and gooderCode!='' ">
+                AND base.gooder_code LIKE concat('%',#{gooderCode},'%')
+            </if>
+            <if test="carrierCode!=null and carrierCode!='' ">
+                AND base.carrier_code LIKE concat('%',#{carrierCode},'%')
+            </if>
+            <if test="priority!=null and priority!='' ">
+                AND base.priority LIKE concat('%',#{priority},'%')
+            </if>
+
+            <if test="orderType!=null">
+                AND base.order_type = #{orderType}
+            </if>
+            <if test="orderCode!=null and orderCode!='' ">
+                AND base.order_code LIKE concat('%',#{orderCode},'%')
+            </if>
+            <if test="waveCode!=null and waveCode!='' ">
+                AND base.wave_code LIKE concat('%',#{waveCode},'%')
+            </if>
+            <if test="printNum!=null">
+                AND base.print_num = #{printNum}
+            </if>
+            <if test="hangUp!=null">
+                AND base.hang_up = #{hangUp}
+            </if>
+            <if test="sendCode!=null and sendCode!='' ">
+                AND base.send_code LIKE concat('%',#{sendCode},'%')
+            </if>
+            <if test="waybillCode!=null and waybillCode!='' ">
+                AND base.waybill_code LIKE concat('%',#{waybillCode},'%')
+            </if>
+            <if test="goodCode!=null and goodCode!='' ">
+                AND detail.good_code LIKE concat('%',#{goodCode},'%')
+            </if>
+            <if test="statement!=null and statement!=''">
+                AND base.statement LIKE concat('%',#{statement},'%')
+            </if>
+            <if test="orderTimeStart!=null and orderTimeEnd!=null">
+                AND   base.order_time BETWEEN #{orderTimeStart,jdbcType=TIMESTAMP} AND #{orderTimeEnd,jdbcType=TIMESTAMP}
+            </if>
+            <if test="orderTimeStart!=null and orderTimeEnd!=null">
+                AND   base.pay_time BETWEEN #{payTimeStart,jdbcType=TIMESTAMP} AND #{payTimeEnd,jdbcType=TIMESTAMP}
+            </if>
+            <if test="placeId!=null and placeId!='' ">
+                AND base.place_id =#{placeId}
+            </if>
+            <if test="providerCode!=null and providerCode!='' ">
+                AND detail.provider_code LIKE concat('%',#{providerCode},'%')
+            </if>
+            <if test="orgCode!=null and orgCode!='' ">
+                AND detail.org_code LIKE concat('%',#{orgCode},'%')
+            </if>
+        </where>
+        order by base.id desc
+    </select>
+
+</mapper>

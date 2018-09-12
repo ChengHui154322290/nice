@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.miniprogram.dao.GoodSpuMapper">
+  <resultMap id="BaseResultMap" type="com.nice.miniprogram.model.GoodSpu">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="spu_code" jdbcType="VARCHAR" property="spuCode" />
+    <result column="spu_name" jdbcType="VARCHAR" property="spuName" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="gooder_code" jdbcType="VARCHAR" property="gooderCode" />
+    <result column="style_id" jdbcType="INTEGER" property="styleId" />
+    <result column="category_id" jdbcType="INTEGER" property="categoryId" />
+    <result column="brand_id" jdbcType="INTEGER" property="brandId" />
+    <result column="price_section" jdbcType="VARCHAR" property="priceSection" />
+    <result column="pack_code" jdbcType="VARCHAR" property="packCode" />
+    <result column="bulk" jdbcType="DOUBLE" property="bulk" />
+    <result column="net_weight" jdbcType="DOUBLE" property="netWeight" />
+    <result column="tare_weight" jdbcType="DOUBLE" property="tareWeight" />
+    <result column="rough_weight" jdbcType="DOUBLE" property="roughWeight" />
+    <result column="property" jdbcType="VARCHAR" property="property" />
+    <result column="period" jdbcType="VARCHAR" property="period" />
+    <result column="period_unite" jdbcType="VARCHAR" property="periodUnite" />
+    <result column="good_link" jdbcType="VARCHAR" property="goodLink" />
+    <result column="brokerage_link" jdbcType="VARCHAR" property="brokerageLink" />
+    <result column="brokerage_ratio" jdbcType="DOUBLE" property="brokerageRatio" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="creater" jdbcType="VARCHAR" property="creater" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="modifier" jdbcType="VARCHAR" property="modifier" />
+    <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+  </resultMap>
+
+  <select id="getBySpu" resultMap="BaseResultMap" parameterType="String">
+    select * from x_good_spu
+    where spu_code=#{spuCode}
+  </select>
+
+
+  <resultMap id="BaseVoResultMap" type="com.nice.miniprogram.vo.GoodSpuVo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="spu_code" jdbcType="VARCHAR" property="spuCode" />
+    <result column="spu_name" jdbcType="VARCHAR" property="spuName" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="gooder_code" jdbcType="VARCHAR" property="gooderCode" />
+    <result column="style_id" jdbcType="INTEGER" property="styleId" />
+    <result column="category_id" jdbcType="INTEGER" property="categoryId" />
+    <result column="brand_id" jdbcType="INTEGER" property="brandId" />
+    <result column="price_section" jdbcType="VARCHAR" property="priceSection" />
+    <result column="pack_code" jdbcType="VARCHAR" property="packCode" />
+    <result column="bulk" jdbcType="DOUBLE" property="bulk" />
+    <result column="net_weight" jdbcType="DOUBLE" property="netWeight" />
+    <result column="tare_weight" jdbcType="DOUBLE" property="tareWeight" />
+    <result column="rough_weight" jdbcType="DOUBLE" property="roughWeight" />
+    <result column="property" jdbcType="VARCHAR" property="property" />
+    <result column="period" jdbcType="VARCHAR" property="period" />
+    <result column="period_unite" jdbcType="VARCHAR" property="periodUnite" />
+    <result column="good_link" jdbcType="VARCHAR" property="goodLink" />
+    <result column="brokerage_link" jdbcType="VARCHAR" property="brokerageLink" />
+    <result column="brokerage_ratio" jdbcType="DOUBLE" property="brokerageRatio" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="creater" jdbcType="VARCHAR" property="creater" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="modifier" jdbcType="VARCHAR" property="modifier" />
+    <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="use_num" jdbcType="VARCHAR" property="useNum" />
+    <result column="seat_code" jdbcType="VARCHAR" property="seatCode" />
+    <result column="click_num" jdbcType="INTEGER" property="clickNum" />
+    <result column="collar_num" jdbcType="INTEGER" property="collarNum" />
+    <result column="style_name" jdbcType="VARCHAR" property="styleName" />
+    <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
+    <result column="normal_price" jdbcType="VARCHAR" property="normalPrice" />
+  </resultMap>
+
+  <select id="getListByParams" parameterType="Map" resultMap="BaseVoResultMap">
+      SELECT
+      x.*,
+      sel.normal_price,
+      sel.use_num,
+      count.click_num,
+      count.collar_num,
+      style.NAME AS style_name,
+      category.NAME AS category_name
+      FROM
+      (
+      SELECT
+      spu.spu_code,
+      MIN(sku.normal_price) normal_price,
+      SUM( s.use_num ) use_num
+      FROM
+      x_good_spu spu
+      LEFT JOIN x_good_sku sku ON sku.spu_code = spu.spu_code
+      LEFT JOIN s_seat_stock s ON s.good_code = sku.sku_code
+      LEFT JOIN i_store_seat i ON i.seat_code = s.seat_code
+      left join i_store_area a on a.area_code = i.area_code
+      WHERE 1=1
+    <if test="placeNumber!=null and placeNumber!=''">
+      and i.place_number = #{placeNumber}
+    </if>
+    <if test="seatCode!=null and seatCode!=''">
+      and i.seat_code = #{seatCode}
+    </if>
+    <if test="areaCode!=null and areaCode!=''">
+      and a.area_code=#{areaCode}
+    </if>
+    <if test="goodSize!=null and goodSize!=''">
+      and sku.goodSize = #{goodSize}
+    </if>
+    <if test="lowBrokerageRatio!=null and lowBrokerageRatio!=''">
+      and sku.brokerage_ratio <![CDATA[ >= ]]> #{lowBrokerageRatio}
+    </if>
+    <if test="highBrokerageRatio!=null and highBrokerageRatio!=''">
+      and sku.brokerage_ratio <![CDATA[ <= ]]> #{highBrokerageRatio}
+    </if>
+    <if test="lowNormalPrice!=null and lowNormalPrice!=''">
+      and sku.normal_price <![CDATA[ >= ]]> #{lowNormalPrice}
+    </if>
+    <if test="highNormalPrice!=null and highNormalPrice!=''">
+      and sku.normal_price <![CDATA[ <= ]]> #{highNormalPrice}
+    </if>
+    GROUP BY spu.spu_code
+      ) sel
+      LEFT JOIN x_good_spu x ON x.spu_code = sel.spu_code
+      LEFT JOIN ( SELECT spu_code, SUM( click_num ) click_num, SUM( collar_num ) collar_num FROM x_good_count GROUP BY spu_code ) count ON sel.spu_code = count.spu_code
+      LEFT JOIN g_good_style style ON style.id = x.style_id
+      LEFT JOIN g_good_category category ON category.id = x.category_id
+    where 1=1 and sel.use_num is not null
+    <if test="styleList !=null">
+      and style.id in
+      <foreach collection="styleList" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    <if test="categoryId !=null">
+      and category.id=#{categoryId}
+    </if>
+    <if test="title!=null and title !=''">
+      and (x.spu_name like concat('%',#{title},'%') or style.name like concat('%',#{title},'%')
+            or  CONCAT(x.spu_name,style.name) like concat('%',#{title},'%') )
+    </if>
+
+    <if test="orderByClick!=null and orderByClick==1">
+      order by count.click_num desc
+    </if>
+    <if test="orderByClick!=null and orderByClick==0">
+      order by count.click_num asc
+    </if>
+    <if test="orderByPrice!=null and orderByPrice==1">
+      order by sel.normal_price desc
+    </if>
+    <if test="orderByPrice!=null and orderByPrice==0">
+      order by  sel.normal_price asc
+    </if>
+    <if test="start!=null and size!=null">
+      limit #{start},#{size}
+    </if>
+
+  </select>
+
+  <select id="getRecommendSpuList" parameterType="map" resultMap="BaseVoResultMap">
+    SELECT
+    x.*,
+    sel.normal_price,
+    sel.use_num,
+    count.click_num,
+    count.collar_num,
+    style.NAME AS style_name
+    FROM
+    (
+    SELECT
+    spu.spu_code,
+    MIN(sku.normal_price) normal_price,
+    SUM( s.use_num ) use_num
+    FROM
+    x_good_spu spu
+    LEFT JOIN x_good_sku sku ON sku.spu_code = spu.spu_code
+    LEFT JOIN s_seat_stock s ON s.good_code = sku.sku_code
+    LEFT JOIN i_store_seat i ON i.seat_code = s.seat_code
+    left join i_store_area a on a.area_code = i.area_code
+    GROUP BY spu.spu_code
+    ) sel
+    LEFT JOIN x_good_spu x ON x.spu_code = sel.spu_code
+    LEFT JOIN ( SELECT spu_code, SUM( click_num ) click_num, SUM( collar_num ) collar_num FROM x_good_count GROUP BY spu_code ) count ON sel.spu_code = count.spu_code
+    LEFT JOIN g_good_style style ON style.id = x.style_id
+    where 1=1 and sel.use_num is not null
+    <if test="styles !=null ">
+      and style.name in
+      <foreach collection="styles" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    order by sel.normal_price ASC ,count.click_num DESC
+    limit 0,50
+  </select>
+</mapper>

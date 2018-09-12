@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.SysRoleMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.SysRole">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="key_id" jdbcType="VARCHAR" property="keyId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="role_id" jdbcType="INTEGER" property="roleId"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_id" jdbcType="VARCHAR" property="createId"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="modify_id" jdbcType="VARCHAR" property="modifyId"/>
+        <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    </resultMap>
+
+    <!-- 通过 name 值查询 role_id  2018/05/21 17:33 -->
+    <select id="findRoleIdByName" parameterType="String" resultType="String">
+        SELECT role_id FROM a_sys_role WHERE name=#{name}
+    </select>
+
+    <select id="findNameByRoleId" parameterType="String" resultType="String">
+        SELECT name FROM a_sys_role WHERE role_id = #{role_id}
+    </select>
+
+    <!-- 通过 roleId 查询 a_user_role 表中是否对应的有 username  2018/05/16 rk -->
+    <select id="findUsernameByRoleId" parameterType="String" resultType="String">
+        SELECT username FROM a_user_role WHERE role_id = #{role_id}
+    </select>
+
+    <!-- 查询所有的 name 角色名称 2018/05/21 rk -->
+    <select id="findRoleName" resultType="String">
+        SELECT name FROM a_sys_role
+    </select>
+
+    <!-- 查询所有的 role_id 角色id 2018/05/11 rk -->
+    <select id="findRoleId" resultType="String">
+        SELECT role_id FROM a_sys_role
+    </select>
+
+
+    <select id="checkRoleIDOrRoleName" resultType="String">
+      SELECT key_id FROM a_sys_role WHERE role_id=#{role_id}
+    </select>
+
+    <!-- SELECT key_id FROM a_sys_role WHERE role_id=#{role_id} OR name=#{name} -->
+
+    <!-- 根据roleId、name 模糊匹配查询 a_sys_role -->
+    <select id="findRoleByIdORName" resultMap="BaseResultMap">
+        SELECT key_id, id, role_id, name, remark, create_id, create_date, modify_id, modify_date
+        FROM a_sys_role
+        <where>
+            <if test="role_id != '' and role_id != null">
+                role_id LIKE CONCAT('%', #{role_id}, '%')
+            </if>
+            <if test="name != '' and name != null">
+                AND name LIKE CONCAT('%', #{name}, '%')
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据rold_id 删除a_sys_role中的数据 -->
+    <delete id="deleteByRoleId" parameterType="String">
+        DELETE FROM a_sys_role WHERE role_id=#{role_id}
+    </delete>
+
+</mapper>

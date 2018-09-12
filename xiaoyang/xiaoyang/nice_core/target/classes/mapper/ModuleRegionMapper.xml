@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.miniprogram.dao.ModuleRegionMapper">
+    <resultMap id="BaseResultMap" type="com.nice.miniprogram.model.ModuleRegion">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="abbr_cn_name" jdbcType="VARCHAR" property="abbrCnName"/>
+        <result column="cn_name" jdbcType="VARCHAR" property="cnName"/>
+        <result column="code" jdbcType="VARCHAR" property="code"/>
+        <result column="en_name" jdbcType="VARCHAR" property="enName"/>
+        <result column="first_spell" jdbcType="VARCHAR" property="firstSpell"/>
+        <result column="full_spell" jdbcType="VARCHAR" property="fullSpell"/>
+        <result column="parent_id" jdbcType="VARCHAR" property="parentId"/>
+        <result column="type" jdbcType="VARCHAR" property="type"/>
+        <result column="zipcode" jdbcType="VARCHAR" property="zipcode"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+    </resultMap>
+
+    <select id="findRegion" parameterType="String" resultMap="BaseResultMap">
+    SELECT * FROM z_module_region WHERE parent_id = #{parentId}
+  </select>
+    <select id="findCname" parameterType="String" resultType="String">
+        SELECT cn_name FROM z_module_region z WHERE z.id
+        in
+        <foreach collection="list" item="id" index="index"
+                 open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="findById" parameterType="String" resultType="String">
+        SELECT id FROM z_module_region z WHERE z.cn_name
+        in
+        <foreach collection="list" item="cnName" index="index"
+                 open="(" close=")" separator=",">
+            #{cnName}
+        </foreach>
+    </select>
+
+    <select id="selectArea" parameterType="String" resultType="String">
+    SELECT cn_name from z_module_region where parent_id=(
+    SELECT id from z_module_region where cn_name=#{cnName})
+  </select>
+
+
+</mapper>

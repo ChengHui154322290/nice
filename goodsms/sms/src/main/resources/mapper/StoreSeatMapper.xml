@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.StoreSeatMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.StoreSeat">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="seat_id" jdbcType="VARCHAR" property="seatId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="place_number" jdbcType="VARCHAR" property="placeNumber"/>
+        <result column="area_code" jdbcType="VARCHAR" property="areaCode"/>
+        <result column="seat_name" jdbcType="VARCHAR" property="seatName"/>
+        <result column="seat_code" jdbcType="VARCHAR" property="seatCode"/>
+        <result column="mix_good" jdbcType="INTEGER" property="mixGood"/>
+        <result column="mix_batch" jdbcType="INTEGER" property="mixBatch"/>
+        <result column="seat_type" jdbcType="VARCHAR" property="seatType"/>
+        <result column="level" jdbcType="VARCHAR" property="level"/>
+        <result column="seat_tag" jdbcType="VARCHAR" property="seatTag"/>
+        <result column="seat_status" jdbcType="INTEGER" property="seatStatus"/>
+        <result column="seat_capacity" jdbcType="INTEGER" property="seatCapacity"/>
+        <result column="statement" jdbcType="VARCHAR" property="statement"/>
+        <result column="length" jdbcType="DOUBLE" property="length"/>
+        <result column="width" jdbcType="DOUBLE" property="width"/>
+        <result column="height" jdbcType="DOUBLE" property="height"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="createtime" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime"/>
+        <result column="place_id" jdbcType="VARCHAR" property="placeId"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+    </resultMap>
+
+    <select id="findWxSeatCode" parameterType="string" resultType="String">
+        SELECT  DISTINCT  seat_code
+        FROM s_seat_stock WHERE place_id=#{placeId}
+    </select>
+    <select id="findIdBySeatCode" resultType="String">
+        SELECT seat_id
+        FROM i_store_seat
+        WHERE seat_code = #{seatCode} AND place_id = #{placeId}
+    </select>
+    <select id="selectCapacityBySeatCode" resultType="int">
+        SELECT seat_capacity
+        FROM i_store_seat
+        WHERE seat_code = #{seatCode} AND place_id = #{placeId}
+    </select>
+    <select id="findSeatCode" parameterType="string" resultType="String">
+        SELECT seat_code
+        FROM i_store_seat
+        WHERE seat_id = #{seatId}
+    </select>
+    <select id="findAllSeatCode" parameterType="string" resultType="String">
+        SELECT seat_code
+        FROM o_receive_detail WHERE place_id=#{placeId}
+        UNION
+        SELECT seat_code
+        FROM s_seat_stock WHERE place_id=#{placeId}
+    </select>
+    <select id="findSeat" resultMap="BaseResultMap">
+        SELECT *
+        FROM i_store_seat
+        WHERE area_code = #{areaCode} AND place_id = #{placeId}
+    </select>
+    <select id="findSeatType" resultType="string">
+        SELECT seat_type
+        FROM i_store_seat
+        WHERE seat_code = #{seatCode}  AND place_id = #{placeId}
+    </select>
+
+    <resultMap id="PlaceSeatVoResultMap" type="com.nice.good.vo.PlaceSeatVo">
+        <id column="seat_id" jdbcType="VARCHAR" property="seatId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="exhibition" jdbcType="VARCHAR" property="exhibition"/>
+        <result column="place_number" jdbcType="VARCHAR" property="placeNumber"/>
+        <result column="area_name" jdbcType="VARCHAR" property="areaName"/>
+        <result column="area_code" jdbcType="VARCHAR" property="areaCode"/>
+        <result column="seat_name" jdbcType="VARCHAR" property="seatName"/>
+        <result column="seat_code" jdbcType="VARCHAR" property="seatCode"/>
+        <result column="mix_good" jdbcType="INTEGER" property="mixGood"/>
+        <result column="mix_batch" jdbcType="INTEGER" property="mixBatch"/>
+        <result column="seat_type" jdbcType="VARCHAR" property="seatType"/>
+        <result column="statement" jdbcType="VARCHAR" property="statement"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="createtime" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime"/>
+    </resultMap>
+
+
+    <select id="findByConditionWx" parameterType="Map" resultMap="BaseResultMap">
+
+        SELECT seat.*
+        FROM i_store_seat seat
+        where seat.place_id =#{placeId}
+        and seat_type='直播间'
+        <if test="areaCode!='' and areaCode!=null">
+            AND seat.area_code LIKE concat('%',#{areaCode},'%')
+        </if>
+
+        <if test="seatCode!='' and seatCode!=null">
+            AND seat.seat_code LIKE concat('%',#{seatCode},'%')
+        </if>
+
+        ORDER BY seat.id DESC
+    </select>
+
+    <select id="findByConditions" parameterType="Map" resultMap="PlaceSeatVoResultMap">
+
+        SELECT DISTINCT seat.*,area.area_name,place.exhibition
+        FROM i_store_seat AS seat LEFT JOIN i_store_area AS area ON seat.area_code = area.area_code
+        LEFT JOIN a_sys_place AS place ON seat.place_id=place.place_id
+        <where>
+            <if test="placeNumber!='' and placeNumber!=null">
+                AND seat.place_number =#{placeNumber}
+            </if>
+
+            <if test="areaCode!='' and areaCode!=null">
+                AND area.area_code LIKE concat('%',#{areaCode},'%')
+            </if>
+            <if test="areaName!='' and areaName!=null">
+                AND area.area_name LIKE concat('%',#{areaName},'%')
+            </if>
+            <if test="seatType!='' and seatType!=null">
+                AND seat.seat_type LIKE concat('%',#{seatType},'%')
+            </if>
+            <if test="seatName!='' and seatName!=null">
+                AND seat.seat_name LIKE concat('%',#{seatName},'%')
+            </if>
+            <if test="seatCode!='' and seatCode!=null">
+                AND seat.seat_code LIKE concat('%',#{seatCode},'%')
+            </if>
+            <if test="placeId!='' and placeId!=null">
+                AND seat.place_id =#{placeId}
+            </if>
+        </where>
+        ORDER BY seat.id DESC
+    </select>
+
+    <update id="updateSeatCapacity">
+        UPDATE i_store_seat
+        SET seat_capacity = seat_capacity + #{capacity}
+        WHERE seat_code = #{seatCode}  AND place_id = #{placeId}
+    </update>
+
+    <select id="selectByAreaCode" resultType="String">
+        SELECT seat_code
+        FROM i_store_seat
+        WHERE area_code = #{areaCode} AND seat_capacity > 0 AND place_id = #{placeId}
+        ORDER BY seat_name
+    </select>
+
+    <select id="selectSeatTagBySeatCode" resultType="String">
+        SELECT seat_tag
+        FROM i_store_seat
+        WHERE seat_code = #{seatCode} AND place_id = #{placeId}
+    </select>
+
+    <select id="selectSeatTypeBySeatCode" resultType="String">
+        SELECT seat_type
+        FROM i_store_seat
+        WHERE seat_code = #{seatCode} AND place_id = #{placeId}
+    </select>
+
+    <select id="selectSeatCode" parameterType="String" resultType="String">
+        SELECT seat_code
+        FROM i_store_seat
+        WHERE place_id = #{placeId}
+    </select>
+
+    <!--<insert id="batchInsertList">-->
+    <!--insert into i_store_seat-->
+    <!--(seat_id,place_number,area_code,seat_name,seat_code,mix_good,mix_batch,seat_type,level,seat_tag,seat_status,seat_capacity,-->
+    <!--statement,length,width,height,creater,createtime,modifier,modifytime)-->
+    <!--values-->
+    <!--<foreach item="item" index="index" collection="list" separator=",">-->
+    <!--(#{item.seatId},#{item.placeNumber},#{item.areaCode},#{item.seatName},#{item.seatCode},#{item.mixGood},-->
+    <!--#{item.mixBatch},#{item.seatType},#{item.level},#{item.seatTag},#{item.seatStatus},#{item.seatCapacity},-->
+    <!--#{item.statement},#{item.length},#{item.width},#{item.height},#{item.creater},now(),-->
+    <!--#{item.modifier},now())-->
+    <!--</foreach>-->
+    <!--</insert>-->
+
+    <select id="selectCountByAreaAndPlace" resultType="Integer">
+        SELECT count(id) FROM  i_store_seat WHERE area_code=#{areaCode} AND place_id=#{placeId}
+    </select>
+
+</mapper>

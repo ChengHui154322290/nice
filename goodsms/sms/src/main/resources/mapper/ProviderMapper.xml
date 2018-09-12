@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.ProviderMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.Provider">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="provider_id" jdbcType="VARCHAR" property="providerId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="provider_code" jdbcType="VARCHAR" property="providerCode"/>
+        <result column="provider_name" jdbcType="VARCHAR" property="providerName"/>
+        <result column="provider_level" jdbcType="VARCHAR" property="providerLevel"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="linkman" jdbcType="VARCHAR" property="linkman"/>
+        <result column="sex" jdbcType="VARCHAR" property="sex"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="qq" jdbcType="VARCHAR" property="qq"/>
+        <result column="telephone" jdbcType="VARCHAR" property="telephone"/>
+        <result column="wangwang" jdbcType="VARCHAR" property="wangwang"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="fax" jdbcType="VARCHAR" property="fax"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="certificate_type" jdbcType="VARCHAR" property="certificateType"/>
+        <result column="certificate_num" jdbcType="VARCHAR" property="certificateNum"/>
+        <result column="open_bank" jdbcType="VARCHAR" property="openBank"/>
+        <result column="bank_account" jdbcType="VARCHAR" property="bankAccount"/>
+        <result column="help_code" jdbcType="VARCHAR" property="helpCode"/>
+        <result column="other_code" jdbcType="VARCHAR" property="otherCode"/>
+        <result column="web_url" jdbcType="VARCHAR" property="webUrl"/>
+        <result column="statement" jdbcType="VARCHAR" property="statement"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="createtime" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime"/>
+        <result column="place_id" jdbcType="VARCHAR" property="placeId"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+    </resultMap>
+
+    <select id="findIdByProviderCode" parameterType="String" resultType="String">
+        select provider_id  from  e_provider where provider_code = #{providerCode}
+    </select>
+
+    <select id="findProviderCodes" resultType="String">
+      SELECT provider_code FROM e_provider WHERE status=1
+    </select>
+
+
+</mapper>

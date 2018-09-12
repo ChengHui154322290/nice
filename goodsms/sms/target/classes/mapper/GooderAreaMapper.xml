@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.GooderAreaMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.GooderArea">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="area_id" jdbcType="VARCHAR" property="areaId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="area_type" jdbcType="VARCHAR" property="areaType"/>
+        <result column="area_name" jdbcType="VARCHAR" property="areaName"/>
+        <result column="area_code" jdbcType="VARCHAR" property="areaCode"/>
+        <result column="min_num" jdbcType="INTEGER" property="minNum"/>
+        <result column="max_num" jdbcType="INTEGER" property="maxNum"/>
+        <result column="fist_area" jdbcType="INTEGER" property="fistArea"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="createtime" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime"/>
+        <result column="gooder_id" jdbcType="VARCHAR" property="gooderId"/>
+        <result column="place_id" jdbcType="VARCHAR" property="placeId"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+    </resultMap>
+    <delete id="deleteByGooderId" parameterType="String">
+        DELETE FROM n_gooder_area
+        WHERE gooder_id = #{gooderId}
+    </delete>
+
+    <select id="selectAreaByGooderId"  resultMap="BaseResultMap">
+        SELECT *
+        FROM n_gooder_area
+        WHERE gooder_id = #{gooderId} AND place_id=#{placeId}
+        ORDER BY fist_area DESC
+    </select>
+
+
+    <delete id="deleteAreaById" >
+        DELETE FROM n_gooder_area
+        WHERE area_id = #{areaId} and place_id=#{placeId}
+    </delete>
+
+    <select id="selectAreaByGooderCode" parameterType="String" resultMap="BaseResultMap">
+        SELECT *
+        FROM n_gooder_area
+        WHERE gooder_id = (SELECT gooder_id
+                           FROM n_gooder
+                           WHERE gooder_code = #{gooderCode}) AND place_id=#{placeId}
+    </select>
+
+
+    <select id="selectByGooderCodeAndPlaceId" resultMap="BaseResultMap">
+        SELECT *
+        FROM n_gooder_area
+        WHERE gooder_id = (SELECT gooder_id
+                            FROM n_gooder
+                            WHERE gooder_code = #{gooderCode}) AND place_id=#{placeId} AND fist_area=#{firstArea}
+    </select>
+</mapper>

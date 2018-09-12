@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.OutDetailMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.OutDetail">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="detail_id" jdbcType="VARCHAR" property="detailId"/>
+        <result column="line_code" jdbcType="VARCHAR" property="lineCode"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="gooder_code" jdbcType="VARCHAR" property="gooderCode"/>
+        <result column="good_code" jdbcType="VARCHAR" property="goodCode"/>
+        <result column="good_name" jdbcType="VARCHAR" property="goodName"/>
+        <result column="provider_code" jdbcType="VARCHAR" property="providerCode"/>
+        <result column="org_code" jdbcType="VARCHAR" property="orgCode"/>
+        <result column="pack_code" jdbcType="VARCHAR" property="packCode"/>
+        <result column="unite" jdbcType="VARCHAR" property="unite"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="order_num" jdbcType="INTEGER" property="orderNum"/>
+        <result column="allot_num" jdbcType="INTEGER" property="allotNum"/>
+        <result column="pick_num" jdbcType="INTEGER" property="pickNum"/>
+        <result column="send_num" jdbcType="INTEGER" property="sendNum"/>
+        <result column="surplus_num" jdbcType="INTEGER" property="surplusNum"/>
+        <result column="reason" jdbcType="VARCHAR" property="reason"/>
+        <result column="express_code" jdbcType="VARCHAR" property="expressCode"/>
+        <result column="hang_up" jdbcType="INTEGER" property="hangUp"/>
+        <result column="base_id" jdbcType="VARCHAR" property="baseId"/>
+        <result column="create_id" jdbcType="VARCHAR" property="createId"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="modify_id" jdbcType="VARCHAR" property="modifyId"/>
+        <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate"/>
+        <result column="place_id" jdbcType="VARCHAR" property="placeId"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+    </resultMap>
+    <update id="updateByBaseId">
+        UPDATE d_out_detail
+        SET hang_up = #{hangUp}
+        WHERE base_id = #{baseId}
+    </update>
+
+    <select id="selectByGooderAndCode" resultType="String">
+        SELECT detail_id
+        FROM d_out_detail
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}
+    </select>
+
+    <delete id="deleteByBaseId" parameterType="String">
+        DELETE FROM d_out_detail
+        WHERE base_id = #{baseId}
+
+    </delete>
+
+    <select id="selectByBaseId" parameterType="String"  resultMap="BaseResultMap">
+        select * FROM d_out_detail WHERE base_id=#{baseId} ORDER BY line_code
+    </select>
+
+
+    <select id="selectOrderSumByBaseId" parameterType="String" resultType="Integer">
+        select ifnull(sum(order_num),0) FROM d_out_detail WHERE base_id=#{baseId}
+    </select>
+
+    <select id="selectAllotSumByBaseId" parameterType="String" resultType="Integer">
+
+        SELECT ifnull( sum(allot_num),0)  FROM d_out_detail WHERE base_id=#{baseId}
+    </select>
+
+    <select id="selectSumOfOrderNum" parameterType="String" resultType="Integer">
+        SELECT ifnull( sum(order_num),0)  FROM d_out_detail WHERE base_id=#{baseId}
+    </select>
+
+    <select id="selectSumOfAllotNum" parameterType="String" resultType="Integer">
+        SELECT  ifnull(sum(allot_num),0)  FROM d_out_detail WHERE base_id=#{baseId}
+    </select>
+
+    <select id="selectSumOfPickNum" parameterType="String" resultType="Integer">
+        SELECT  ifnull(sum(pick_num),0)  FROM d_out_detail WHERE base_id=#{baseId}
+    </select>
+
+
+    <select id="selectSumOfSurplusNum" parameterType="String" resultType="Integer">
+        SELECT  ifnull(sum(surplus_num),0)  FROM d_out_detail WHERE base_id=#{baseId}
+    </select>
+
+    <select id="selectCountByBaseId" parameterType="String" resultType="Integer">
+        SELECT count(1) FROM d_out_detail WHERE base_id=#{baseId}
+    </select>
+
+
+</mapper>

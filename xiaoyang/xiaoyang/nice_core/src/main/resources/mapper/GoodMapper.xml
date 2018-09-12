@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.miniprogram.dao.GoodMapper">
+  <resultMap id="BaseResultMap" type="com.nice.miniprogram.model.Good">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="good_id" jdbcType="VARCHAR" property="goodId" />
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="gooder_code" jdbcType="VARCHAR" property="gooderCode" />
+    <result column="commodity_code" jdbcType="VARCHAR" property="commodityCode" />
+    <result column="good_code" jdbcType="VARCHAR" property="goodCode" />
+    <result column="good_model" jdbcType="VARCHAR" property="goodModel" />
+    <result column="good_name" jdbcType="VARCHAR" property="goodName" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="pack_code" jdbcType="VARCHAR" property="packCode" />
+    <result column="bulk" jdbcType="DOUBLE" property="bulk" />
+    <result column="net_weight" jdbcType="DOUBLE" property="netWeight" />
+    <result column="tare_weight" jdbcType="DOUBLE" property="tareWeight" />
+    <result column="rough_weight" jdbcType="DOUBLE" property="roughWeight" />
+    <result column="property" jdbcType="VARCHAR" property="property" />
+    <result column="brand" jdbcType="VARCHAR" property="brand" />
+    <result column="period" jdbcType="VARCHAR" property="period" />
+    <result column="period_unite" jdbcType="VARCHAR" property="periodUnite" />
+    <result column="good_link" jdbcType="VARCHAR" property="goodLink" />
+    <result column="good_color" jdbcType="VARCHAR" property="goodColor" />
+    <result column="good_size" jdbcType="VARCHAR" property="goodSize" />
+    <result column="brokerage_link" jdbcType="VARCHAR" property="brokerageLink" />
+    <result column="brokerage_ratio" jdbcType="DOUBLE" property="brokerageRatio" />
+    <result column="category_id" jdbcType="INTEGER" property="categoryId" />
+    <result column="style_id" jdbcType="INTEGER" property="styleId" />
+    <result column="normal_price" jdbcType="DOUBLE" property="normalPrice" />
+    <result column="seckill_price" jdbcType="DOUBLE" property="seckillPrice" />
+    <result column="discount_method" jdbcType="VARCHAR" property="discountMethod" />
+    <result column="discount_link" jdbcType="VARCHAR" property="discountLink" />
+    <result column="discount_content" jdbcType="VARCHAR" property="discountContent" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="creater" jdbcType="VARCHAR" property="creater" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="modifier" jdbcType="VARCHAR" property="modifier" />
+    <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+  </resultMap>
+
+  <select id="getOneByGoodCode" resultMap="BaseResultMap" parameterType="String">
+    select * from g_good
+    where good_code=#{goodCode}
+  </select>
+</mapper>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.OutReceiverMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.OutReceiver">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="receiver_id" jdbcType="VARCHAR" property="receiverId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="receiver" jdbcType="VARCHAR" property="receiver"/>
+        <result column="telephone" jdbcType="BIGINT" property="telephone"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="country" jdbcType="VARCHAR" property="country"/>
+        <result column="province" jdbcType="VARCHAR" property="province"/>
+        <result column="city" jdbcType="VARCHAR" property="city"/>
+        <result column="district" jdbcType="VARCHAR" property="district"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="hang_up" jdbcType="INTEGER" property="hangUp"/>
+        <result column="base_id" jdbcType="VARCHAR" property="baseId"/>
+        <result column="create_id" jdbcType="VARCHAR" property="createId"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="modify_id" jdbcType="VARCHAR" property="modifyId"/>
+        <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate"/>
+        <result column="place_id" jdbcType="VARCHAR" property="placeId"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+    </resultMap>
+    <update id="updateByBaseId">
+     UPDATE d_out_receiver  SET  hang_up=#{hangUp} WHERE base_id=#{baseId}
+    </update>
+
+    <delete id="deleteByBaseId" parameterType="String">
+        DELETE  FROM d_out_receiver WHERE base_id=#{baseId}
+    </delete>
+
+    <select id="selectByBaseId" parameterType="String" resultMap="BaseResultMap">
+        SELECT * FROM d_out_receiver WHERE base_id=#{baseId}
+    </select>
+</mapper>

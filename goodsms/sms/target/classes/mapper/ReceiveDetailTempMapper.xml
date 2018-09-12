@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.ReceiveDetailTempMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.ReceiveDetailTemp">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="detail_id" jdbcType="VARCHAR" property="detailId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="gooder_code" jdbcType="VARCHAR" property="gooderCode"/>
+        <result column="org_code" jdbcType="VARCHAR" property="orgCode"/>
+        <result column="provider_code" jdbcType="VARCHAR" property="providerCode"/>
+        <result column="good_code" jdbcType="VARCHAR" property="goodCode"/>
+        <result column="good_name" jdbcType="VARCHAR" property="goodName"/>
+        <result column="good_model" jdbcType="VARCHAR" property="goodModel"/>
+        <result column="purchase_code" jdbcType="VARCHAR" property="purchaseCode"/>
+        <result column="purchase_line_code" jdbcType="VARCHAR" property="purchaseLineCode"/>
+        <result column="outside_line_code" jdbcType="VARCHAR" property="outsideLineCode"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="is_quality" jdbcType="INTEGER" property="isQuality"/>
+        <result column="rweight" jdbcType="DOUBLE" property="rweight"/>
+        <result column="bulk" jdbcType="DOUBLE" property="bulk"/>
+        <result column="expect_num" jdbcType="INTEGER" property="expectNum"/>
+        <result column="receive_num" jdbcType="INTEGER" property="receiveNum"/>
+        <result column="refuse_num" jdbcType="INTEGER" property="refuseNum"/>
+        <result column="quality_num" jdbcType="INTEGER" property="qualityNum"/>
+        <result column="second_num" jdbcType="INTEGER" property="secondNum"/>
+        <result column="shelf_num" jdbcType="INTEGER" property="shelfNum"/>
+        <result column="seat_code" jdbcType="VARCHAR" property="seatCode"/>
+        <result column="rfid" jdbcType="INTEGER" property="rfid"/>
+        <result column="operator" jdbcType="VARCHAR" property="operator"/>
+        <result column="lpn" jdbcType="VARCHAR" property="lpn"/>
+        <result column="receive_time" jdbcType="TIMESTAMP" property="receiveTime"/>
+        <result column="quality_time" jdbcType="TIMESTAMP" property="qualityTime"/>
+        <result column="shelf_time" jdbcType="TIMESTAMP" property="shelfTime"/>
+        <result column="receive_id" jdbcType="VARCHAR" property="receiveId"/>
+        <result column="hang_up" jdbcType="INTEGER" property="hangUp"/>
+        <result column="create_id" jdbcType="VARCHAR" property="createId"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="modify_id" jdbcType="VARCHAR" property="modifyId"/>
+        <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate"/>
+        <result column="place_id" jdbcType="VARCHAR" property="placeId"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+    </resultMap>
+    <delete id="deleteByReceiveId" parameterType="string">
+        DELETE FROM o_receive_detail_temp
+        WHERE receive_id = #{receiveId}
+    </delete>
+
+    <select id="selectAllByReceiveId" parameterType="string" resultMap="BaseResultMap">
+        SELECT *
+        FROM o_receive_detail_temp
+        WHERE receive_id = #{receiveId}
+    </select>
+</mapper>

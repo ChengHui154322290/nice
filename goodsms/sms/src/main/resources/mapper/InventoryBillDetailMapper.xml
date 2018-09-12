@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.InventoryBillDetailMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.InventoryBillDetail">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="detail_id" jdbcType="VARCHAR" property="detailId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="inventory_bill_id" jdbcType="VARCHAR" property="inventoryBillId"/>
+        <result column="provider_code" jdbcType="VARCHAR" property="providerCode"/>
+        <result column="org_code" jdbcType="VARCHAR" property="orgCode"/>
+        <result column="gooder_code" jdbcType="VARCHAR" property="gooderCode"/>
+        <result column="gooder_name" jdbcType="VARCHAR" property="gooderName"/>
+        <result column="good_code" jdbcType="VARCHAR" property="goodCode"/>
+        <result column="good_name" jdbcType="VARCHAR" property="goodName"/>
+        <result column="seat_code" jdbcType="VARCHAR" property="seatCode"/>
+        <result column="area_code" jdbcType="VARCHAR" property="areaCode"/>
+        <result column="lot_num" jdbcType="VARCHAR" property="lotNum"/>
+        <result column="LPN" jdbcType="VARCHAR" property="lpn"/>
+        <result column="existing_quantity" jdbcType="INTEGER" property="existingQuantity"/>
+        <result column="inventory_quantity" jdbcType="INTEGER" property="inventoryQuantity"/>
+        <result column="diff_quantity" jdbcType="INTEGER" property="diffQuantity"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_id" jdbcType="VARCHAR" property="createId"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="modify_id" jdbcType="VARCHAR" property="modifyId"/>
+        <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate"/>
+        <result column="place_id" jdbcType="VARCHAR" property="placeId"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+    </resultMap>
+
+
+    <!-- 通过 inventory_bill_id(盘点单编号) 计算 对应的 diff_quantity(差异量) 总和  2018/06/15  15:46 rk -->
+    <select id="calculateDiffQuantity" parameterType="String" resultType="Integer">
+        SELECT SUM(diff_quantity)
+        FROM k_inventory_bill_detail
+        WHERE inventory_bill_id = #{inventoryBillId}
+    </select>
+
+    <!-- 通过 inventory_bill_id(盘点单编号) 查询 对应的 status 值，返回 List<T> 集合   2018/06/13  16:04  rk -->
+    <select id="selectStatusByInventoryBillId" parameterType="String" resultType="Integer">
+        SELECT DISTINCT status
+        FROM k_inventory_bill_detail
+        WHERE inventory_bill_id = #{inventoryBillId}
+    </select>
+
+    <!-- 通过 detailId(主键Id) 查询 k_inventory_bill_detail(盘点明细表) 中对应的 status 值  2018/06/13  10:02  rk  -->
+    <select id="selectStatusByDetailId" parameterType="String" resultType="Integer">
+        SELECT status
+        FROM k_inventory_bill_detail
+        WHERE detail_id = #{detailId};
+    </select>
+
+    <!-- 通过 inventory_bill_id(盘点单编号) 来查询 k_inventory_bill_detail 表中相关信息  2018/06/12  15:49  rk  -->
+    <select id="selectInventoryBillDetailByInventoryBillId" parameterType="String" resultMap="BaseResultMap">
+        SELECT *
+        FROM k_inventory_bill_detail
+        WHERE inventory_bill_id = #{inventoryBillId}
+    </select>
+
+
+    <resultMap id="AdjustBillDetailVoResultMap" type="com.nice.good.vo.BillDetailVo">
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="gooder_name" jdbcType="VARCHAR" property="gooderName"/>
+        <result column="gooder_code" jdbcType="VARCHAR" property="gooderCode"/>
+        <result column="area_code" jdbcType="VARCHAR" property="areaCode"/>
+        <result column="seat_code" jdbcType="VARCHAR" property="seatCode"/>
+        <result column="provider_code" jdbcType="VARCHAR" property="providerCode"/>
+        <result column="org_code" jdbcType="VARCHAR" property="orgCode"/>
+        <result column="good_code" jdbcType="VARCHAR" property="goodCode"/>
+        <result column="good_model" jdbcType="VARCHAR" property="goodModel"/>
+        <result column="good_name" jdbcType="VARCHAR" property="goodName"/>
+        <result column="now_num" jdbcType="INTEGER" property="nowNum"/>
+        <result column="use_num" jdbcType="INTEGER" property="useNum"/>
+        <result column="allot_num" jdbcType="INTEGER" property="allotNum"/>
+        <result column="pick_num" jdbcType="INTEGER" property="pickNum"/>
+        <result column="freeze_num" jdbcType="INTEGER" property="freezeNum"/>
+    </resultMap>
+
+
+    <!-- 通过 货主编码、货品编码、库区编码、货品规格、库位编码、货品名称、剔除空库位、 库存变更时间 查询相关信息  2018/06/09 rk   -->
+    <select id="findMsg" resultMap="AdjustBillDetailVoResultMap">
+        SELECT DISTINCT
+        gooder.gooder_name,
+        stock.gooder_code,
+        stock.good_name,
+        stock.good_code,
+        stock.org_code,
+        stock.provider_code,
+        stock.seat_code,
+        stock.now_num,
+        stock.use_num,
+        stock.allot_num,
+        stock.pick_num,
+        stock.freeze_num,
+        good.good_model,
+        seat.area_code
+        from s_seat_stock as stock
+        LEFT JOIN g_good as good ON stock.good_code=good.good_code
+        LEFT JOIN n_gooder as gooder ON stock.gooder_code=gooder.gooder_code
+        LEFT JOIN i_store_seat as seat ON stock.seat_code=seat.seat_code AND stock.place_id=seat.place_id
+        <where>
+            <if test="gooderCode !='' and gooderCode !=null">
+             AND  stock.gooder_code LIKE CONCAT('%', #{gooderCode}, '%')
+           </if>
+            <if test="goodCode !='' and goodCode !=null">
+             AND stock.good_code LIKE CONCAT('%', #{goodCode}, '%')
+            </if>
+            <if test="goodModel !='' and goodModel !=null">
+             AND good.good_model LIKE CONCAT('%', #{goodModel}, '%')
+            </if>
+            <if test="goodName !='' and goodName !=null">
+             AND stock.good_name LIKE CONCAT('%', #{goodName}, '%')
+            </if>
+            <if test="seatCode !='' and seatCode !=null">
+             AND stock.seat_code LIKE CONCAT('%', #{seatCode}, '%')
+            </if>
+            <if test="areaCode !='' and areaCode !=null">
+             AND stock.area_code LIKE CONCAT('%', #{areaCode}, '%')
+            </if>
+            <if test="modifyDateStart != null and modifyDateEnd != null">
+             AND stock.modify_date BETWEEN #{modifyDateStart, jdbcType =TIMESTAMP}  AND #{modifyDateEnd, jdbcType =TIMESTAMP}
+            </if>
+            <if test="isNull == 1 ">
+             AND stock.now_num > 0
+            </if>
+            <if test="isNull == 0 ">
+             AND stock.now_num = 0
+            </if>
+            <if test="placeId !='' and placeId !=null">
+             AND stock.place_id=#{placeId}
+            </if>
+             AND stock.gooder_code is NOT NULL
+             AND stock.org_code is NOT NULL
+             AND stock.provider_code IS NOT NULL
+        </where>
+    </select>
+
+</mapper>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.OutPickMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.OutPick">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="pick_id" jdbcType="VARCHAR" property="pickId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="send_code" jdbcType="VARCHAR" property="sendCode"/>
+        <result column="detail_code" jdbcType="VARCHAR" property="detailCode"/>
+        <result column="gooder_code" jdbcType="VARCHAR" property="gooderCode"/>
+        <result column="good_code" jdbcType="VARCHAR" property="goodCode"/>
+        <result column="provider_code" jdbcType="VARCHAR" property="providerCode"/>
+        <result column="org_code" jdbcType="VARCHAR" property="orgCode"/>
+        <result column="pack_code" jdbcType="VARCHAR" property="packCode"/>
+        <result column="pick_num" jdbcType="INTEGER" property="pickNum"/>
+        <result column="seat_code" jdbcType="VARCHAR" property="seatCode"/>
+        <result column="goal_seat_code" jdbcType="VARCHAR" property="goalSeatCode"/>
+        <result column="rfid" jdbcType="INTEGER" property="rfid"/>
+        <result column="operator" jdbcType="VARCHAR" property="operator"/>
+        <result column="operate_time" jdbcType="TIMESTAMP" property="operateTime"/>
+        <result column="reason" jdbcType="VARCHAR" property="reason"/>
+        <result column="detail_id" jdbcType="VARCHAR" property="detailId"/>
+        <result column="create_id" jdbcType="VARCHAR" property="createId"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="modify_id" jdbcType="VARCHAR" property="modifyId"/>
+        <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate"/>
+        <result column="line_code" jdbcType="VARCHAR" property="lineCode"/>
+        <result column="place_id" jdbcType="VARCHAR" property="placeId"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+    </resultMap>
+    <select id="selectMaxId" resultType="int">
+        SELECT IFNULL(max(id), 0)
+        FROM d_out_pick
+    </select>
+    <select id="selectAllByDetailId" parameterType="string" resultMap="BaseResultMap">
+        SELECT *
+        FROM d_out_pick
+        WHERE detail_id = #{detailId}
+    </select>
+
+    <delete id="deleteByDetailId" parameterType="String">
+        DELETE FROM d_out_pick
+        WHERE detail_id = #{detailId}
+    </delete>
+
+    <select id="selectSumOfRfidNum" parameterType="String" resultType="Integer">
+        SELECT sum(rfid)
+        FROM d_out_pick
+        GROUP BY detail_id
+        HAVING detail_id = #{detailId}
+    </select>
+
+    <select id="selectByGooderAndGoodCode" resultMap="BaseResultMap">
+        SELECT *
+        FROM d_out_pick
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}
+    </select>
+
+
+    <select id="selectGoodAndSeatCode" resultMap="BaseResultMap">
+        SELECT *
+        FROM d_out_pick
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode} AND seat_code = #{seatCode}
+    </select>
+
+    <select id="selectCountRfidByDetailId" parameterType="String" resultType="Integer">
+        SELECT sum(rfid) FROM d_out_pick WHERE detail_id=#{detailId}
+    </select>
+</mapper>

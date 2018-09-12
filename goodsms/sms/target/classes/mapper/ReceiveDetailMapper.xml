@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.ReceiveDetailMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.ReceiveDetail">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="detail_id" jdbcType="VARCHAR" property="detailId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="gooder_code" jdbcType="VARCHAR" property="gooderCode"/>
+        <result column="org_code" jdbcType="VARCHAR" property="orgCode"/>
+        <result column="provider_code" jdbcType="VARCHAR" property="providerCode"/>
+        <result column="good_code" jdbcType="VARCHAR" property="goodCode"/>
+        <result column="good_name" jdbcType="VARCHAR" property="goodName"/>
+        <result column="good_model" jdbcType="VARCHAR" property="goodModel"/>
+        <result column="purchase_code" jdbcType="VARCHAR" property="purchaseCode"/>
+        <result column="purchase_line_code" jdbcType="INTEGER" property="purchaseLineCode"/>
+        <result column="outside_line_code" jdbcType="VARCHAR" property="outsideLineCode"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="is_quality" jdbcType="INTEGER" property="isQuality"/>
+        <result column="rweight" jdbcType="DOUBLE" property="rweight"/>
+        <result column="bulk" jdbcType="DOUBLE" property="bulk"/>
+        <result column="expect_num" jdbcType="INTEGER" property="expectNum"/>
+        <result column="receive_num" jdbcType="INTEGER" property="receiveNum"/>
+        <result column="refuse_num" jdbcType="INTEGER" property="refuseNum"/>
+        <result column="quality_num" jdbcType="INTEGER" property="qualityNum"/>
+        <result column="second_num" jdbcType="INTEGER" property="secondNum"/>
+        <result column="shelf_num" jdbcType="INTEGER" property="shelfNum"/>
+        <result column="seat_code" jdbcType="VARCHAR" property="seatCode"/>
+        <result column="rfid" jdbcType="INTEGER" property="rfid"/>
+        <result column="operator" jdbcType="VARCHAR" property="operator"/>
+        <result column="lpn" jdbcType="VARCHAR" property="lpn"/>
+        <result column="receive_time" jdbcType="TIMESTAMP" property="receiveTime"/>
+        <result column="quality_time" jdbcType="TIMESTAMP" property="qualityTime"/>
+        <result column="shelf_time" jdbcType="TIMESTAMP" property="shelfTime"/>
+        <result column="receive_id" jdbcType="VARCHAR" property="receiveId"/>
+        <result column="hang_up" jdbcType="INTEGER" property="hangUp"/>
+        <result column="create_id" jdbcType="VARCHAR" property="createId"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="modify_id" jdbcType="VARCHAR" property="modifyId"/>
+        <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate"/>
+        <result column="place_id" jdbcType="VARCHAR" property="placeId"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+    </resultMap>
+
+    <select id="selectByReceiveId" parameterType="string" resultType="string">
+        SELECT detail_id
+        FROM o_receive_detail
+        WHERE receive_id = #{receiveId}
+    </select>
+
+
+    <!--
+        rk  2018/04/25  18:03
+     -->
+    <!-- 通过 receive_Id 获取 o_receive_detail 表中所有信息   -->
+    <select id="selectReceiveDetailByReceiveId" parameterType="string" resultType="string">
+        SELECT
+           *
+        FROM o_receive_detail
+        WHERE receive_id = #{receiveId} AND status IN (1, 2)
+    </select>
+
+
+    <select id="findDetailByReceiveId" parameterType="string" resultMap="BaseResultMap">
+        SELECT *
+        FROM o_receive_detail
+        WHERE receive_id = #{receiveId}   ORDER BY  id
+    </select>
+
+
+    <select id="selectByGooderAndCode" resultType="String">
+        SELECT detail_id
+        FROM o_receive_detail
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}
+    </select>
+
+    <select id="selectListByReceiveId" parameterType="String" resultMap="BaseResultMap">
+        SELECT *
+        FROM o_receive_detail
+        WHERE receive_id = #{receiveId}
+    </select>
+
+
+    <resultMap id="ChooseOrderResultMap" type="com.nice.good.vo.ChooseOrderVo">
+
+        <id column="order_id" jdbcType="VARCHAR" property="orderId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="purchase_code" jdbcType="VARCHAR" property="purchaseCode"/>
+        <result column="purchase_type" jdbcType="INTEGER" property="purchaseType"/>
+        <result column="gooder_code" jdbcType="VARCHAR" property="gooderCode"/>
+        <result column="provider_code" jdbcType="VARCHAR" property="providerCode"/>
+        <result column="org_code" jdbcType="VARCHAR" property="orgCode"/>
+        <result column="statement" jdbcType="VARCHAR" property="statement"/>
+        <result column="auditing_id" jdbcType="VARCHAR" property="auditingId"/>
+        <result column="auditing_date" jdbcType="TIMESTAMP" property="auditingDate"/>
+        <result column="create_id" jdbcType="VARCHAR" property="createId"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="good_code" jdbcType="VARCHAR" property="goodCode"/>
+        <result column="good_name" jdbcType="VARCHAR" property="goodName"/>
+        <result column="commodity_code" jdbcType="VARCHAR" property="commodityCode"/>
+        <result column="good_model" jdbcType="VARCHAR" property="goodModel"/>
+        <result column="create_date_start" jdbcType="TIMESTAMP" property="createDateStart"/>
+        <result column="create_date_end" jdbcType="TIMESTAMP" property="createDateEnd"/>
+        <result column="auditing_date_start" jdbcType="TIMESTAMP" property="auditingDateStart"/>
+        <result column="auditing_date_end" jdbcType="TIMESTAMP" property="auditingDateEnd"/>
+    </resultMap>
+
+
+    <select id="chooseOrderVo" parameterType="com.nice.good.vo.ChooseOrderVo" resultMap="ChooseOrderResultMap">
+        SELECT DISTINCT
+        o.id,o.order_id,o.purchase_code,o.gooder_code,o.provider_code,o.org_code,o.purchase_type,o.create_id,o.auditing_id,o.create_date,o.auditing_date,o.statement
+        FROM o_order as o
+        LEFT JOIN o_order_good_mapping AS m ON o.order_id = m.order_id
+        <where>
+            <if test="purchaseType!=null and purchaseType!=''">
+               AND o.purchase_type =#{purchaseType}
+            </if>
+            <if test="gooderCode!=null and gooderCode!=''">
+               AND o.gooder_code = #{gooderCode}
+            </if>
+
+            <if test="orgCode!=null and orgCode!=''">
+              AND  o.org_code = #{orgCode}
+            </if>
+            <if test="providerCode!=null and providerCode!=''">
+               AND o.provider_code = #{providerCode}
+            </if>
+            <if test="createId!=null and createId!=''">
+               AND o.create_id like concat('%',#{createId},'%')
+            </if>
+            <if test="auditingId!=null and auditingId!=''">
+               AND o.auditing_id like concat('%',#{auditingId},'%')
+            </if>
+            <if test="statement!=null and statement!=''">
+              AND  o.statement like concat('%',#{statement},'%')
+            </if>
+            <if test="createDateStart!=null and createDateEnd!=null ">
+               AND o.create_date between #{createDateStart} and #{createDateEnd}
+            </if>
+            <if test="auditingDateStart!=null and auditingDateEnd!=null ">
+              AND  o.auditing_date between #{auditingDateStart} and #{auditingDateEnd}
+            </if>
+            <if test="statement!=null and statement!=''">
+              AND  o.statement like concat('%',#{statement},'%')
+            </if>
+            <if test="goodCode!=null and goodCode!=''">
+                AND m.good_code like concat('%',#{goodCode},'%')
+            </if>
+            <if test="goodName!=null and goodName!=''">
+                AND m.good_name like concat('%',#{goodName},'%')
+            </if>
+            <if test="commodityCode!=null and commodityCode!=''">
+                AND m.commodity_code like concat('%',#{commodityCode},'%')
+            </if>
+            <if test="goodModel!=null and goodModel!=''">
+                 AND m.good_model like concat('%',#{goodModel},'%')
+             </if>
+        </where>
+        AND o.order_status IN (1,2) ORDER BY o.id
+
+    </select>
+
+
+    <select id="selectStatus" parameterType="String" resultType="Integer">
+        SELECT status
+        FROM o_receive_detail
+        WHERE detail_id = #{detailId}
+    </select>
+
+
+    <select id="selectTotalExpectNum"  resultType="Integer">
+        SELECT ifnull(sum(expect_num),0)
+        FROM o_receive_detail
+        GROUP BY purchase_code,purchase_line_code HAVING purchase_code=#{purchaseCode} AND  purchase_line_code=#{purchaseLineCode}
+    </select>
+
+
+    <select id="selectTotalReceiveNum"  resultType="Integer">
+        SELECT ifnull(sum(receive_num),0)
+        FROM o_receive_detail
+        GROUP BY purchase_code,purchase_line_code HAVING purchase_code=#{purchaseCode} AND  purchase_line_code=#{purchaseLineCode}
+    </select>
+
+
+
+    <select id="selectCountByPurchaseCode" parameterType="String" resultType="Integer">
+        SELECT count(detail_id)
+        FROM o_receive_detail
+        GROUP BY purchase_code
+        HAVING purchase_code = #{purchaseCode}
+    </select>
+
+
+
+    <select id="selectCountByReceiveId" parameterType="String" resultType="Integer">
+        SELECT count(receive_id)
+        FROM o_receive_detail
+        GROUP BY receive_id
+        HAVING receive_id = #{receiveId}
+    </select>
+
+
+    <select id="selectByPurchaseCode" parameterType="String" resultMap="ReceiveDetailVoResultMap">
+        SELECT sum(expect_num) AS expect_sum,sum(receive_num) AS receive_sum,sum(refuse_num) AS refuse_sum,sum(quality_num) as quality_sum,sum(second_num) AS second_sum
+        FROM o_receive_detail
+        GROUP BY purchase_code HAVING purchase_code=#{purchaseCode}
+    </select>
+
+    <resultMap id="ReceiveDetailVoResultMap" type="com.nice.good.vo.ReceiveDetailVo">
+        <result column="expect_sum" jdbcType="INTEGER" property="expectSum"/>
+        <result column="receive_sum" jdbcType="INTEGER" property="receiveSum"/>
+        <result column="refuse_sum" jdbcType="INTEGER" property="refuseSum"/>
+        <result column="quality_sum" jdbcType="INTEGER" property="qualitySum"/>
+        <result column="second_sum" jdbcType="INTEGER" property="secondSum"/>
+    </resultMap>
+
+    <select id="selectByPurchaseLineCode"  resultMap="BaseResultMap">
+        SELECT *FROM o_receive_detail WHERE  purchase_code =#{purchaseCode} and  purchase_line_code=#{purchaseLineCode}
+    </select>
+
+    <select id="selectOrderMapByPurchase" resultMap="ReceiveDetailVoResultMap">
+        SELECT sum(expect_num) AS expect_sum,sum(receive_num) AS receive_sum,sum(refuse_num) AS refuse_sum,sum(quality_num) as quality_sum,sum(second_num) AS second_sum
+        FROM o_receive_detail
+        GROUP BY purchase_code,purchase_line_code HAVING purchase_code=#{purchaseCode} AND  purchase_line_code=#{purchaseLineCode}
+    </select>
+
+    <select id="selectCountByLineAndCode" resultType="Integer">
+        SELECT ifnull(count(receive_id),0)
+        FROM o_receive_detail
+        GROUP BY purchase_code,purchase_line_code
+        HAVING purchase_code=#{purchaseCode} AND purchase_line_code=#{purchaseLineCode}
+    </select>
+
+    <select id="selectSumByLineAndCode" resultType="Integer">
+        SELECT sum(status)
+        FROM o_receive_detail
+        GROUP BY purchase_code,purchase_line_code
+        HAVING purchase_code=#{purchaseCode} AND purchase_line_code=#{purchaseLineCode}
+    </select>
+    
+    
+    <select id="selectSumOfReceiveNum" resultType="Integer">
+        SELECT ifnull(sum(receive_num),0) FROM o_receive_detail GROUP BY gooder_code,good_code ,receive_id HAVING gooder_code=#{gooderCode} AND good_code=#{goodCode} AND receive_id=#{receiveId}
+    </select>
+
+    <select id="selectSumOfRefuseNum" resultType="Integer">
+        SELECT ifnull(sum(refuse_num),0) FROM o_receive_detail GROUP BY gooder_code,good_code ,receive_id HAVING gooder_code=#{gooderCode} AND good_code=#{goodCode} AND receive_id=#{receiveId}
+    </select>
+    
+    <select id="selectSumOfExpectNum"  resultType="Integer">
+        SELECT ifnull(sum(expect_num),0) FROM o_receive_detail GROUP BY gooder_code,good_code,receive_id HAVING gooder_code=#{gooderCode} AND good_code=#{goodCode} AND receive_id=#{receiveId}
+    </select>
+
+    <select id="selectSeatCode" resultType="String">
+        SELECT seat_code FROM o_receive_detail WHERE  gooder_code=#{gooderCode} AND good_code=#{goodCode} AND receive_id=#{receiveId} AND expect_num>0
+    </select>
+
+    <select id="selectRfidByGooderAndCode" resultType="Integer">
+        SELECT rfid
+        FROM o_receive_detail
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}
+    </select>
+
+    <select id="selectExpectNum" resultType="Integer">
+        SELECT ifnull(sum(expect_num),0) FROM o_receive_detail GROUP BY purchase_code,purchase_line_code HAVING purchase_code=#{purchaseCode} AND purchase_line_code=#{purchaseLineCode}
+    </select>
+
+
+    <select id="selectReceiveNum" resultType="Integer">
+        SELECT ifnull(sum(receive_num),0) FROM o_receive_detail GROUP BY purchase_code,purchase_line_code HAVING purchase_code=#{purchaseCode} AND purchase_line_code=#{purchaseLineCode}
+    </select>
+
+    <select id="selectRefuseNum" resultType="Integer">
+        SELECT ifnull(sum(refuse_num),0) FROM o_receive_detail GROUP BY purchase_code,purchase_line_code HAVING purchase_code=#{purchaseCode} AND purchase_line_code=#{purchaseLineCode}
+    </select>
+
+    <select id="selectDetailStatusByReceiveId" parameterType="String" resultType="Integer">
+        SELECT DISTINCT  status FROM o_receive_detail WHERE receive_id=#{receiveId}
+    </select>
+
+    <update id="updateSameGoodStatus">
+        UPDATE o_receive_detail SET status=#{status} WHERE gooder_code=#{gooderCode} AND good_code=#{goodCode} AND receive_id=#{receiveId}
+    </update>
+    <update id="updateSamePurchaseStatus">
+        UPDATE o_receive_detail SET status=#{status} WHERE purchase_code=#{purchaseCode} AND purchase_line_code=#{purchaseLineCode}
+    </update>
+
+    <update id="updateOtherStatus">
+        UPDATE o_receive_detail SET status=1 WHERE gooder_code=#{gooderCode} AND good_code=#{goodCode} AND receive_id=#{receiveId} AND status=2
+    </update>
+
+    <update id="updateOtherPurchaseStatus">
+        UPDATE o_receive_detail SET status=1 WHERE purchase_code=#{purchaseCode} AND purchase_line_code=#{purchaseLineCode}  AND status=2
+    </update>
+
+    <select id="selectReceiveDetailByPurchaseCode" parameterType="String" resultMap="BaseResultMap">
+        SELECT * FROM o_receive_detail WHERE purchase_code=#{purchaseCode}
+    </select>
+
+    <select id="selectAllSeatCode" resultType="String">
+        SELECT DISTINCT seat_code FROM o_receive_detail WHERE gooder_code=#{gooderCode} AND good_code=#{goodCode} AND place_id=#{placeId}
+    </select>
+
+    <select id="selectSeatCodeByGooderCode" parameterType="String" resultType="String">
+        SELECT DISTINCT seat_code FROM o_receive_detail WHERE gooder_code=#{gooderCode} AND place_id=#{placeId}
+    </select>
+
+    <select id="selectAllSeatCodes" resultType="String">
+        SELECT seat_code FROM o_receive_detail WHERE status &lt; 6
+    </select>
+
+    <select id="selectDetailByReceiveIdAndCode" resultMap="BaseResultMap">
+        SELECT * from o_receive_detail WHERE receive_id=#{receiveId} AND gooder_code=#{gooderCode} AND good_code=#{goodCode} AND status BETWEEN 1 AND 4
+    </select>
+
+
+</mapper>

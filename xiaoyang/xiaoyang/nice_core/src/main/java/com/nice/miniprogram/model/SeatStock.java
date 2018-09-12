@@ -1,0 +1,512 @@
+package com.nice.miniprogram.model;
+
+import java.util.Date;
+import javax.persistence.*;
+
+@Table(name = "s_seat_stock")
+public class SeatStock {
+    /**
+     * 主键库位库存表id
+     */
+    @Id
+    @Column(name = "stock_id")
+    private String stockId;
+
+    /**
+     * 序号id,自动增长
+     */
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    /**
+     * 组织编码
+     */
+    @Column(name = "org_code")
+    private String orgCode;
+
+    /**
+     * 供应商编码
+     */
+    @Column(name = "provider_code")
+    private String providerCode;
+
+    /**
+     * 货主编码
+     */
+    @Column(name = "gooder_code")
+    private String gooderCode;
+
+    /**
+     * 货品编码
+     */
+    @Column(name = "good_code")
+    private String goodCode;
+
+    /**
+     * 库位编号
+     */
+    @Column(name = "seat_code")
+    private String seatCode;
+
+    /**
+     * 商品编码
+     */
+    @Column(name = "commodity_code")
+    private String commodityCode;
+
+    /**
+     * 货品名称
+     */
+    @Column(name = "good_name")
+    private String goodName;
+
+    /**
+     * 现有量
+     */
+    @Column(name = "now_num")
+    private Integer nowNum;
+
+    /**
+     * 可用量
+     */
+    @Column(name = "use_num")
+    private Integer useNum;
+
+    /**
+     * 分配量
+     */
+    @Column(name = "allot_num")
+    private Integer allotNum;
+
+    /**
+     * 拣货量
+     */
+    @Column(name = "pick_num")
+    private Integer pickNum;
+
+    /**
+     * 冻结量
+     */
+    @Column(name = "freeze_num")
+    private Integer freezeNum;
+
+    /**
+     * 是否冻结 0否 1是
+     */
+    @Column(name = "freeze_status")
+    private Integer freezeStatus;
+
+    /**
+     * 创建人
+     */
+    @Column(name = "create_id")
+    private String createId;
+
+    /**
+     * 创建时间
+     */
+    @Column(name = "create_date")
+    private Date createDate;
+
+    /**
+     * 修改人
+     */
+    @Column(name = "modify_id")
+    private String modifyId;
+
+    /**
+     * 修改时间
+     */
+    @Column(name = "modify_date")
+    private Date modifyDate;
+
+    /**
+     * 企业id
+     */
+    @Column(name = "company_id")
+    private String companyId;
+
+    /**
+     * 场地id
+     */
+    @Column(name = "place_id")
+    private String placeId;
+
+    /**
+     * 获取主键库位库存表id
+     *
+     * @return stock_id - 主键库位库存表id
+     */
+    public String getStockId() {
+        return stockId;
+    }
+
+    /**
+     * 设置主键库位库存表id
+     *
+     * @param stockId 主键库位库存表id
+     */
+    public void setStockId(String stockId) {
+        this.stockId = stockId;
+    }
+
+    /**
+     * 获取序号id,自动增长
+     *
+     * @return id - 序号id,自动增长
+     */
+    public Integer getId() {
+        return id;
+    }
+
+    /**
+     * 设置序号id,自动增长
+     *
+     * @param id 序号id,自动增长
+     */
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    /**
+     * 获取组织编码
+     *
+     * @return org_code - 组织编码
+     */
+    public String getOrgCode() {
+        return orgCode;
+    }
+
+    /**
+     * 设置组织编码
+     *
+     * @param orgCode 组织编码
+     */
+    public void setOrgCode(String orgCode) {
+        this.orgCode = orgCode;
+    }
+
+    /**
+     * 获取供应商编码
+     *
+     * @return provider_code - 供应商编码
+     */
+    public String getProviderCode() {
+        return providerCode;
+    }
+
+    /**
+     * 设置供应商编码
+     *
+     * @param providerCode 供应商编码
+     */
+    public void setProviderCode(String providerCode) {
+        this.providerCode = providerCode;
+    }
+
+    /**
+     * 获取货主编码
+     *
+     * @return gooder_code - 货主编码
+     */
+    public String getGooderCode() {
+        return gooderCode;
+    }
+
+    /**
+     * 设置货主编码
+     *
+     * @param gooderCode 货主编码
+     */
+    public void setGooderCode(String gooderCode) {
+        this.gooderCode = gooderCode;
+    }
+
+    /**
+     * 获取货品编码
+     *
+     * @return good_code - 货品编码
+     */
+    public String getGoodCode() {
+        return goodCode;
+    }
+
+    /**
+     * 设置货品编码
+     *
+     * @param goodCode 货品编码
+     */
+    public void setGoodCode(String goodCode) {
+        this.goodCode = goodCode;
+    }
+
+    /**
+     * 获取库位编号
+     *
+     * @return seat_code - 库位编号
+     */
+    public String getSeatCode() {
+        return seatCode;
+    }
+
+    /**
+     * 设置库位编号
+     *
+     * @param seatCode 库位编号
+     */
+    public void setSeatCode(String seatCode) {
+        this.seatCode = seatCode;
+    }
+
+    /**
+     * 获取商品编码
+     *
+     * @return commodity_code - 商品编码
+     */
+    public String getCommodityCode() {
+        return commodityCode;
+    }
+
+    /**
+     * 设置商品编码
+     *
+     * @param commodityCode 商品编码
+     */
+    public void setCommodityCode(String commodityCode) {
+        this.commodityCode = commodityCode;
+    }
+
+    /**
+     * 获取货品名称
+     *
+     * @return good_name - 货品名称
+     */
+    public String getGoodName() {
+        return goodName;
+    }
+
+    /**
+     * 设置货品名称
+     *
+     * @param goodName 货品名称
+     */
+    public void setGoodName(String goodName) {
+        this.goodName = goodName;
+    }
+
+    /**
+     * 获取现有量
+     *
+     * @return now_num - 现有量
+     */
+    public Integer getNowNum() {
+        return nowNum;
+    }
+
+    /**
+     * 设置现有量
+     *
+     * @param nowNum 现有量
+     */
+    public void setNowNum(Integer nowNum) {
+        this.nowNum = nowNum;
+    }
+
+    /**
+     * 获取可用量
+     *
+     * @return use_num - 可用量
+     */
+    public Integer getUseNum() {
+        return useNum;
+    }
+
+    /**
+     * 设置可用量
+     *
+     * @param useNum 可用量
+     */
+    public void setUseNum(Integer useNum) {
+        this.useNum = useNum;
+    }
+
+    /**
+     * 获取分配量
+     *
+     * @return allot_num - 分配量
+     */
+    public Integer getAllotNum() {
+        return allotNum;
+    }
+
+    /**
+     * 设置分配量
+     *
+     * @param allotNum 分配量
+     */
+    public void setAllotNum(Integer allotNum) {
+        this.allotNum = allotNum;
+    }
+
+    /**
+     * 获取拣货量
+     *
+     * @return pick_num - 拣货量
+     */
+    public Integer getPickNum() {
+        return pickNum;
+    }
+
+    /**
+     * 设置拣货量
+     *
+     * @param pickNum 拣货量
+     */
+    public void setPickNum(Integer pickNum) {
+        this.pickNum = pickNum;
+    }
+
+    /**
+     * 获取冻结量
+     *
+     * @return freeze_num - 冻结量
+     */
+    public Integer getFreezeNum() {
+        return freezeNum;
+    }
+
+    /**
+     * 设置冻结量
+     *
+     * @param freezeNum 冻结量
+     */
+    public void setFreezeNum(Integer freezeNum) {
+        this.freezeNum = freezeNum;
+    }
+
+    /**
+     * 获取是否冻结 0否 1是
+     *
+     * @return freeze_status - 是否冻结 0否 1是
+     */
+    public Integer getFreezeStatus() {
+        return freezeStatus;
+    }
+
+    /**
+     * 设置是否冻结 0否 1是
+     *
+     * @param freezeStatus 是否冻结 0否 1是
+     */
+    public void setFreezeStatus(Integer freezeStatus) {
+        this.freezeStatus = freezeStatus;
+    }
+
+    /**
+     * 获取创建人
+     *
+     * @return create_id - 创建人
+     */
+    public String getCreateId() {
+        return createId;
+    }
+
+    /**
+     * 设置创建人
+     *
+     * @param createId 创建人
+     */
+    public void setCreateId(String createId) {
+        this.createId = createId;
+    }
+
+    /**
+     * 获取创建时间
+     *
+     * @return create_date - 创建时间
+     */
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    /**
+     * 设置创建时间
+     *
+     * @param createDate 创建时间
+     */
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    /**
+     * 获取修改人
+     *
+     * @return modify_id - 修改人
+     */
+    public String getModifyId() {
+        return modifyId;
+    }
+
+    /**
+     * 设置修改人
+     *
+     * @param modifyId 修改人
+     */
+    public void setModifyId(String modifyId) {
+        this.modifyId = modifyId;
+    }
+
+    /**
+     * 获取修改时间
+     *
+     * @return modify_date - 修改时间
+     */
+    public Date getModifyDate() {
+        return modifyDate;
+    }
+
+    /**
+     * 设置修改时间
+     *
+     * @param modifyDate 修改时间
+     */
+    public void setModifyDate(Date modifyDate) {
+        this.modifyDate = modifyDate;
+    }
+
+    /**
+     * 获取企业id
+     *
+     * @return company_id - 企业id
+     */
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    /**
+     * 设置企业id
+     *
+     * @param companyId 企业id
+     */
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
+    }
+
+    /**
+     * 获取场地id
+     *
+     * @return place_id - 场地id
+     */
+    public String getPlaceId() {
+        return placeId;
+    }
+
+    /**
+     * 设置场地id
+     *
+     * @param placeId 场地id
+     */
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
+    }
+}

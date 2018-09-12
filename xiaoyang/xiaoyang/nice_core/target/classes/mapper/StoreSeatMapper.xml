@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.miniprogram.dao.StoreSeatMapper">
+  <resultMap id="BaseResultMap" type="com.nice.miniprogram.model.StoreSeat">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="seat_id" jdbcType="VARCHAR" property="seatId" />
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="place_number" jdbcType="VARCHAR" property="placeNumber" />
+    <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
+    <result column="seat_name" jdbcType="VARCHAR" property="seatName" />
+    <result column="seat_code" jdbcType="VARCHAR" property="seatCode" />
+    <result column="mix_good" jdbcType="INTEGER" property="mixGood" />
+    <result column="mix_batch" jdbcType="INTEGER" property="mixBatch" />
+    <result column="seat_type" jdbcType="VARCHAR" property="seatType" />
+    <result column="level" jdbcType="VARCHAR" property="level" />
+    <result column="seat_tag" jdbcType="VARCHAR" property="seatTag" />
+    <result column="seat_status" jdbcType="INTEGER" property="seatStatus" />
+    <result column="seat_capacity" jdbcType="INTEGER" property="seatCapacity" />
+    <result column="statement" jdbcType="VARCHAR" property="statement" />
+    <result column="length" jdbcType="DOUBLE" property="length" />
+    <result column="width" jdbcType="DOUBLE" property="width" />
+    <result column="height" jdbcType="DOUBLE" property="height" />
+    <result column="creater" jdbcType="VARCHAR" property="creater" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="modifier" jdbcType="VARCHAR" property="modifier" />
+    <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+  </resultMap>
+
+  <select id="queryPlaceNumber" parameterType="String" resultType="String">
+    select place_number from i_store_seat where seat_id = #{seatId}
+  </select>
+
+  <select id="selectByParams" resultMap="BaseResultMap" parameterType="map">
+    select * from i_store_seat where 1=1
+    <if test="placeNumber!=null and placeNumber!=''">
+      and place_number=#{placeNumber}
+    </if>
+
+  </select>
+
+  <select id="findByCode" parameterType="map" resultMap="BaseResultMap">
+    select * from i_store_seat
+    where seat_code = #{seatCode}
+    <if test="placeId !=null and placeId!=''">
+      and place_id = #{placeId}
+    </if>
+
+  </select>
+</mapper>

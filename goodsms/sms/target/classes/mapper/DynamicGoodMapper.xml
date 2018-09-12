@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.DynamicGoodMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.DynamicGood">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="key_id" jdbcType="VARCHAR" property="keyId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="gooder_code" jdbcType="VARCHAR" property="gooderCode"/>
+        <result column="trade_code" jdbcType="VARCHAR" property="tradeCode"/>
+        <result column="good_code" jdbcType="VARCHAR" property="goodCode"/>
+        <result column="bill_code" jdbcType="VARCHAR" property="billCode"/>
+        <result column="task_code" jdbcType="VARCHAR" property="taskCode"/>
+        <result column="trade_type" jdbcType="VARCHAR" property="tradeType"/>
+        <result column="from_seat" jdbcType="VARCHAR" property="fromSeat"/>
+        <result column="to_seat" jdbcType="VARCHAR" property="toSeat"/>
+        <result column="size" jdbcType="INTEGER" property="size"/>
+        <result column="rfid" jdbcType="INTEGER" property="rfid"/>
+        <result column="create_id" jdbcType="VARCHAR" property="createId"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="modify_id" jdbcType="VARCHAR" property="modifyId"/>
+        <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="place_id" jdbcType="VARCHAR" property="placeId"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+    </resultMap>
+
+    <!-- rk 2018/04/26 -->
+    <select id="findDynamicGoodByMaxId" resultMap="BaseResultMap">
+        SELECT *
+        FROM s_dynamic_good
+        WHERE id = (SELECT MAX(id)
+                    FROM s_dynamic_good)
+    </select>
+
+    <!-- 查询最大id值 2018/05/29  15:49 rk -->
+    <select id="selectMaxId" resultType="Integer">
+        SELECT MAX(id)
+        FROM s_dynamic_good
+    </select>
+</mapper>

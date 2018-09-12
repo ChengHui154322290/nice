@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.GoodSkuMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.wx_model.GoodSku">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="spu_code" jdbcType="VARCHAR" property="spuCode"/>
+        <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
+        <result column="sku_name" jdbcType="VARCHAR" property="skuName"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="good_color" jdbcType="VARCHAR" property="goodColor"/>
+        <result column="good_size" jdbcType="VARCHAR" property="goodSize"/>
+        <result column="brokerage_link" jdbcType="VARCHAR" property="brokerageLink"/>
+        <result column="brokerage_ratio" jdbcType="DOUBLE" property="brokerageRatio"/>
+        <result column="normal_price" jdbcType="DOUBLE" property="normalPrice"/>
+        <result column="seckill_price" jdbcType="DOUBLE" property="seckillPrice"/>
+        <result column="discount_method" jdbcType="VARCHAR" property="discountMethod"/>
+        <result column="discount_link" jdbcType="VARCHAR" property="discountLink"/>
+        <result column="discount_content" jdbcType="VARCHAR" property="discountContent"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="createtime" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+    </resultMap>
+
+    <resultMap id="GoodVoResultMap" type="com.nice.good.wx_model.GoodSkuVo">
+        <result column="spu_code" jdbcType="VARCHAR" property="spuCode"/>
+        <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
+        <result column="sku_name" jdbcType="VARCHAR" property="skuName"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="brokerage_link" jdbcType="VARCHAR" property="brokerageLink"/>
+        <result column="brokerage_ratio" jdbcType="DOUBLE" property="brokerageRatio"/>
+        <result column="normal_price" jdbcType="DOUBLE" property="normalPrice"/>
+        <result column="seckill_price" jdbcType="DOUBLE" property="seckillPrice"/>
+        <result column="discount_method" jdbcType="VARCHAR" property="discountMethod"/>
+        <result column="discount_link" jdbcType="VARCHAR" property="discountLink"/>
+        <result column="discount_content" jdbcType="VARCHAR" property="discountContent"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="createtime" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+
+        <result column="seat_code" jdbcType="VARCHAR" property="seatCode"/>
+        <result column="good_size" jdbcType="VARCHAR" property="goodSize"/>
+        <result column="now_num" jdbcType="INTEGER" property="nowNum"/>
+        <result column="use_num" jdbcType="INTEGER" property="useNum"/>
+        <result column="good_color" jdbcType="VARCHAR" property="goodColor"/>
+        <result column="place_number" jdbcType="VARCHAR" property="placeNumber"/>
+        <result column="normal_price" jdbcType="VARCHAR" property="normalPrice"/>
+        <result column="provider_code" jdbcType="VARCHAR" property="providerCode"/>
+        <result column="gooder_code" jdbcType="VARCHAR" property="gooderCode"/>
+        <result column="area_code" jdbcType="VARCHAR" property="areaCode"/>
+        <result column="stock_id" jdbcType="VARCHAR" property="stockId"/>
+
+    </resultMap>
+    <select id="selectBygoodsMap" parameterType="map" resultMap="GoodVoResultMap">
+        SELECT
+        place.place_number,
+        style. NAME AS styleName,
+        category. NAME AS categoryName,
+        s.stock_id,
+        s.gooder_code,
+        s.good_code,
+        sku.sku_code,
+        sku.sku_name,
+        s.provider_code,
+        s.now_num,
+        s.use_num,
+        s.seat_code,
+        sku.good_color,
+        sku.good_size,
+        sku.normal_price,
+        seat.area_code
+        FROM
+        x_good_sku sku
+        INNER JOIN s_seat_stock s ON s.good_code = sku.sku_code
+        left JOIN a_sys_place place ON s.place_id = place.place_id
+        INNER JOIN i_store_seat seat ON s.seat_code = seat.seat_code
+        INNER JOIN x_good_spu spu ON sku.spu_code = spu.spu_code
+        left JOIN g_good_style style ON style.id = spu.style_id
+        left JOIN g_good_category category ON category.id = spu.category_id
+        where  s.use_num>0
+            <if test="gooderCode != null and gooderCode != ''">
+                and s.gooder_code =#{gooderCode}
+            </if>
+            <if test="palceNumber != null and palceNumber != ''">
+                and place.place_number =#{palceNumber}
+            </if>
+            <if test="seatCode != null and seatCode != ''">
+                and s.seat_code like concat('%',#{seatCode},'%')
+            </if>
+
+            <if test="skuCode != null and skuCode != ''">
+                and sku.sku_code like concat('%',#{skuCode},'%')
+            </if>
+
+            <if test="skuName != null and skuName != ''">
+                and sku.sku_name like concat('%',#{skuName},'%')
+            </if>
+            <if test="areaCode != null and areaCode != ''">
+                and seat.area_code like concat('%',#{areaCode},'%')
+            </if>
+            <if test="goodColor != null and goodColor != ''">
+                and sku.good_color like concat('%',#{goodColor},'%')
+            </if>
+            <if test="goodSize != null and goodSize != ''">
+                and sku.good_size like concat('%',#{goodSize},'%')
+            </if>
+    </select>
+
+
+    <select id="getBySku" parameterType="String" resultMap="BaseResultMap">
+      select * from x_good_sku
+      where sku_code = #{skuCode}
+    </select>
+</mapper>

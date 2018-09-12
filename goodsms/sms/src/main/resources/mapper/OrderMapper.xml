@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.OrderMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.Order">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="order_id" jdbcType="VARCHAR" property="orderId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="purchase_code" jdbcType="VARCHAR" property="purchaseCode"/>
+        <result column="outside_code" jdbcType="VARCHAR" property="outsideCode"/>
+        <result column="order_status" jdbcType="INTEGER" property="orderStatus"/>
+        <result column="purchase_type" jdbcType="INTEGER" property="purchaseType"/>
+        <result column="gooder_code" jdbcType="VARCHAR" property="gooderCode"/>
+        <result column="provider_code" jdbcType="VARCHAR" property="providerCode"/>
+        <result column="place_number" jdbcType="VARCHAR" property="placeNumber"/>
+        <result column="org_code" jdbcType="VARCHAR" property="orgCode"/>
+        <result column="statement" jdbcType="VARCHAR" property="statement"/>
+        <result column="auditing_id" jdbcType="VARCHAR" property="auditingId"/>
+        <result column="auditing_name" jdbcType="VARCHAR" property="auditingName"/>
+        <result column="auditing_date" jdbcType="TIMESTAMP" property="auditingDate"/>
+        <result column="send_time" jdbcType="TIMESTAMP" property="sendTime"/>
+        <result column="create_id" jdbcType="VARCHAR" property="createId"/>
+        <result column="create_name" jdbcType="VARCHAR" property="createName"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="modify_id" jdbcType="VARCHAR" property="modifyId"/>
+        <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate"/>
+        <result column="place_id" jdbcType="VARCHAR" property="placeId"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+    </resultMap>
+
+
+    <select id="selectOrderByProviderCode" parameterType="String" resultType="String">
+        SELECT order_id
+        FROM o_order
+        WHERE provider_code = #{providerCode}
+    </select>
+
+    <select id="selectMaxId" resultType="Integer">
+        SELECT max(id)
+        FROM o_order
+    </select>
+
+    <update id="updateOrderStatus">
+        UPDATE o_order
+        SET order_status = #{status}
+        WHERE order_id = #{orderId}
+    </update>
+
+
+
+    <resultMap id="OrderVoResultMap" type="com.nice.good.vo.OrderVo">
+        <id column="order_id" jdbcType="VARCHAR" property="orderId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="purchase_code" jdbcType="VARCHAR" property="purchaseCode"/>
+        <result column="outside_code" jdbcType="VARCHAR" property="outsideCode"/>
+        <result column="gooder_code" jdbcType="VARCHAR" property="gooderCode"/>
+        <result column="order_status" jdbcType="INTEGER" property="orderStatus"/>
+        <result column="org_code" jdbcType="VARCHAR" property="orgCode"/>
+        <result column="purchase_type" jdbcType="INTEGER" property="purchaseType"/>
+        <result column="provider_code" jdbcType="VARCHAR" property="providerCode"/>
+        <result column="carrier_code" jdbcType="VARCHAR" property="carrierCode"/>
+        <result column="purchase_number" jdbcType="INTEGER" property="purchaseNumber"/>
+        <result column="receive_num" jdbcType="INTEGER" property="receiveNum"/>
+        <result column="statement" jdbcType="VARCHAR" property="statement"/>
+        <result column="create_name" jdbcType="VARCHAR" property="createName"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="auditing_name" jdbcType="VARCHAR" property="auditingName"/>
+        <result column="auditing_date" jdbcType="TIMESTAMP" property="auditingDate"/>
+        <result column="send_time" jdbcType="TIMESTAMP" property="sendTime"/>
+        <result column="place_id" jdbcType="VARCHAR" property="placeId" />
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+    </resultMap>
+
+
+    <select id="findByConditions" parameterType="map" resultMap="OrderVoResultMap">
+
+        SELECT DISTINCT
+            orders.order_id,
+            orders.id,
+            orders.purchase_code,
+            orders.outside_code,
+            orders.gooder_code,
+            orders.order_status,
+            orders.org_code,
+            orders.purchase_type,
+            orders.provider_code,
+            receive.carrier_code,
+            purchase.purchase_number,
+            accept.receive_num,
+            orders.statement,
+            orders.create_name,
+            orders.create_date,
+            orders.auditing_id,
+            orders.auditing_date,
+            orders.send_time
+        FROM o_order AS orders
+            LEFT JOIN o_order_good_mapping AS good ON orders.order_id = good.order_id
+            LEFT JOIN o_receive_detail AS detail ON orders.purchase_code = detail.purchase_code
+            LEFT JOIN o_receive_order AS receive ON detail.receive_id=receive.receive_id
+            <!-- 采购数量-->
+            LEFT JOIN (select order_id,SUM(purchase_number) AS purchase_number FROM o_order_good_mapping GROUP BY order_id) AS purchase ON purchase.order_id=orders.order_id
+            <!-- 收货数量-->
+            LEFT JOIN (SELECT purchase_code,sum(receive_num) AS receive_num FROM o_receive_detail GROUP BY purchase_code) AS accept ON orders.purchase_code = accept.purchase_code
+        <where>
+            1=1
+            <if test="purchaseCode!=null and purchaseCode!='' ">
+               AND orders.purchase_code LIKE concat('%',#{purchaseCode},'%')
+            </if>
+            <if test="orderStatus!=null ">
+                AND orders.order_status = #{orderStatus}
+            </if>
+            <if test="gooderCode!=null and gooderCode!='' ">
+                AND orders.gooder_code LIKE concat('%',#{gooderCode},'%')
+            </if>
+            <if test="providerCode!=null and providerCode!='' ">
+                AND orders.provider_code LIKE concat('%',#{providerCode},'%')
+            </if>
+            <if test="carrierCode!=null and carrierCode!='' ">
+                AND receive.carrier_code LIKE concat('%',#{carrierCode},'%')
+            </if>
+
+            <if test="purchaseType!=null">
+                AND orders.purchase_type =#{purchaseType}
+            </if>
+            <if test="orgCode!=null and orgCode!='' ">
+                AND orders.org_code LIKE concat('%',#{orgCode},'%')
+            </if>
+            <if test="goodCode!=null and goodCode!='' ">
+                AND good.good_code LIKE concat('%',#{goodCode},'%')
+            </if>
+
+            <if test="createName!=null and createName!='' ">
+                AND orders.create_name LIKE concat('%',#{createName},'%')
+            </if>
+            <if test="auditingId!=null and auditingId!='' ">
+                AND orders.auditing_id LIKE concat('%',#{auditingId},'%')
+            </if>
+           <if test="createDateStart!=null and createDateEnd!=null">
+                <!--AND orders.create_date <![CDATA[ >= ]]> #{createDateStart,jdbcType=TIMESTAMP}
+                AND orders.create_date <![CDATA[ < ]]>  #{createDateEnd,jdbcType=TIMESTAMP}-->
+               AND  orders.create_date BETWEEN #{createDateStart,jdbcType=TIMESTAMP} AND #{createDateEnd,jdbcType=TIMESTAMP}
+            </if>
+            <if test="auditingDateStart!=null and auditingDateEnd!=null ">
+                AND orders.auditing_date BETWEEN #{auditingDateStart,jdbcType=TIMESTAMP} AND #{auditingDateEnd,jdbcType=TIMESTAMP}
+            </if>
+            <if test="placeId!=null and placeId!='' ">
+                AND orders.place_id =#{placeId}
+            </if>
+        </where>
+        ORDER BY orders.id DESC
+    </select>
+
+
+    <!--选择产品查询-->
+
+    <resultMap id="OrderMapVoResultMap" type="com.nice.good.vo.OrderMapVo">
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="gooder_name" jdbcType="VARCHAR" property="gooderName"/>
+        <result column="exhibition" jdbcType="VARCHAR" property="exhibition"/>
+        <result column="commodity_code" jdbcType="VARCHAR" property="commodityCode"/>
+        <result column="good_model" jdbcType="VARCHAR" property="goodModel"/>
+        <result column="good_name" jdbcType="VARCHAR" property="goodName"/>
+        <result column="good_code" jdbcType="VARCHAR" property="goodCode"/>
+        <result column="put_strategy" jdbcType="VARCHAR" property="putStrategy" />
+        <result column="period" jdbcType="VARCHAR" property="period"/>
+        <result column="period_unite" jdbcType="VARCHAR" property="periodUnite"/>
+        <result column="pack_code" jdbcType="VARCHAR" property="packCode"/>
+        <!--<result column="company_id" jdbcType="VARCHAR" property="companyId" />-->
+        <!--<result column="place_id" jdbcType="VARCHAR" property="placeId" />-->
+    </resultMap>
+
+   
+
+    <!-- rk 2018/04/27 -->
+    <select id="findOrderByMaxId" resultMap="BaseResultMap">
+      SELECT order_id,id,purchase_code,outside_code,order_status,purchase_type,gooder_code,provider_code,place_number,send_time,org_code,statement,auditing_id,auditing_name,auditing_date,create_id,create_name,create_date,modify_id,modify_date
+      FROM o_order
+      WHERE id = (SELECT MAX(id) FROM o_order)
+    </select>
+
+
+    <update id="updateStatusByPurchaseCode" >
+        UPDATE o_order SET order_status=#{orderStatus} WHERE purchase_code=#{purchaseCode}
+    </update>
+
+    <select id="selectOrderIdPurchaseCode" parameterType="String" resultType="String">
+        SELECT order_id FROM o_order  WHERE purchase_code=#{purchaseCode}
+    </select>
+
+   <select id="selectOrderPurchaseCodeByOrderId" parameterType="String" resultType="String">
+       SELECT purchase_code FROM o_order WHERE order_id=#{orderId}
+   </select>
+
+
+</mapper>

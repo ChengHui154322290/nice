@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.PackManageMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.PackManage">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="pack_id" jdbcType="VARCHAR" property="packId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="pack_code" jdbcType="VARCHAR" property="packCode"/>
+        <result column="pack_name" jdbcType="VARCHAR" property="packName"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="main_unite_num" jdbcType="INTEGER" property="mainUniteNum"/>
+        <result column="main_unite_nite" jdbcType="VARCHAR" property="mainUniteNite"/>
+        <result column="inner_pack_num" jdbcType="INTEGER" property="innerPackNum"/>
+        <result column="inner_pack_unite" jdbcType="VARCHAR" property="innerPackUnite"/>
+        <result column="case_num" jdbcType="INTEGER" property="caseNum"/>
+        <result column="case_unite" jdbcType="VARCHAR" property="caseUnite"/>
+        <result column="tray_num" jdbcType="INTEGER" property="trayNum"/>
+        <result column="tray_unite" jdbcType="VARCHAR" property="trayUnite"/>
+        <result column="statement" jdbcType="VARCHAR" property="statement"/>
+        <result column="create_id" jdbcType="VARCHAR" property="createId"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="modify_id" jdbcType="VARCHAR" property="modifyId"/>
+        <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+        <result column="place_id" jdbcType="VARCHAR" property="placeId"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+    </resultMap>
+
+    <select id="findIdByPackCode"  resultType="String">
+        SELECT pack_id
+        FROM p_pack_manage
+        WHERE pack_code = #{packCode} AND place_id=#{placeId}
+    </select>
+
+
+    <select id="selectPackCodes" resultType="String">
+        SELECT pack_code
+        FROM p_pack_manage WHERE  place_id=#{placeId}
+    </select>
+
+    <select id="selectByPackCode" resultMap="BaseResultMap">
+        SELECT *
+        FROM p_pack_manage
+        WHERE pack_code = #{packCode} AND place_id=#{placeId}
+    </select>
+</mapper>

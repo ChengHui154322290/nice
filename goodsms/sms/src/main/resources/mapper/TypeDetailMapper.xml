@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.TypeDetailMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.TypeDetail">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="detail_id" jdbcType="VARCHAR" property="detailId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="detail_code" jdbcType="VARCHAR" property="detailCode"/>
+        <result column="type_code" jdbcType="VARCHAR" property="typeCode"/>
+        <result column="detail_name" jdbcType="VARCHAR" property="detailName"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="createtime" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime"/>
+        <result column="preset" jdbcType="INTEGER" property="preset"/>
+    </resultMap>
+
+    <select id="selectDetailAll" resultType="String">
+        SELECT
+          detail_code
+        FROM
+          t_type_detail
+  </select>
+    <select id="findByTypeCode" parameterType="String" resultMap="BaseResultMap">
+    SELECT
+    *
+    FROM
+    t_type_detail
+    where
+    type_code=#{typeCode}
+  </select>
+
+    <select id="findPlaceNumber" parameterType="String" resultType="String">
+     SELECT
+          area.place_number
+      FROM
+          i_store_area area
+      LEFT JOIN a_sys_place place ON area.place_number = place.place_number
+      WHERE
+          place.detail_code = #{detailCode}
+  </select>
+
+    <select id="findSysUser" parameterType="String" resultType="String">
+        SELECT
+            name
+        FROM
+            a_sys_user
+        WHERE
+            detail_code =#{detailCode}
+    </select>
+
+    <select id="findStoreArea" parameterType="String" resultType="String">
+            SELECT
+                seat.seat_name
+            FROM
+                i_store_seat seat
+            LEFT JOIN i_store_area area ON seat.area_code = area.area_code
+            WHERE
+                area.detail_code =#{detailCode}
+    </select>
+
+    <select id="findStoreSeat" parameterType="String" resultType="String">
+            SELECT DISTINCT
+                seat.seat_name
+            FROM
+                i_store_seat seat
+            LEFT JOIN o_receive_detail detail ON seat.seat_code = detail.seat_code
+            LEFT JOIN s_seat_stock stock ON seat.seat_code = stock.seat_code
+            WHERE
+                seat.detail_code =#{detailCode}
+    </select>
+
+    <select id="findStyle" parameterType="String" resultType="String">
+            SELECT DISTINCT
+                good_name
+            FROM
+                g_good
+            WHERE
+                seat.detail_code =#{detailCode}
+    </select>
+
+    <select id="findCarrier" parameterType="String" resultType="String">
+        select carrier_name from c_carrier where
+        detail_code =#{detailCode}
+    </select>
+
+    <select id="findOrder" parameterType="String" resultType="String">
+        select detail_code from o_order where
+        detail_code =#{detailCode}
+    </select>
+
+    <select id="findReceiveType" parameterType="String" resultType="String">
+       select detail_code from o_receive_order  where
+        detail_code =#{detailCode}
+    </select>
+
+    <select id="findOrderType" parameterType="String" resultType="String">
+        select detail_code from d_out_base where
+        detail_code =#{detailCode}
+    </select>
+
+    <select id="findInventoryType" parameterType="String" resultType="String">
+       select detail_code from k_inventory_bill where
+        detail_code =#{detailCode}
+    </select>
+
+    <select id="findAdjustType" parameterType="String" resultType="String">
+       select detail_code from k_adjust_bill where
+        detail_code =#{detailCode}
+    </select>
+
+    <select id="findMoveType" parameterType="String" resultType="String">
+        select detail_code from k_move_bill where
+        detail_code =#{detailCode}
+    </select>
+
+</mapper>

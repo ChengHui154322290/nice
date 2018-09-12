@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.ReceiveOrderMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.ReceiveOrder">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="receive_id" jdbcType="VARCHAR" property="receiveId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="receive_code" jdbcType="VARCHAR" property="receiveCode"/>
+        <result column="gooder_code" jdbcType="VARCHAR" property="gooderCode"/>
+        <result column="org_code" jdbcType="VARCHAR" property="orgCode"/>
+        <result column="receive_type" jdbcType="VARCHAR" property="receiveType"/>
+        <result column="order_status" jdbcType="INTEGER" property="orderStatus"/>
+        <result column="appoint_time" jdbcType="TIMESTAMP" property="appointTime"/>
+        <result column="provider_code" jdbcType="VARCHAR" property="providerCode"/>
+        <result column="purchase_code" jdbcType="VARCHAR" property="purchaseCode"/>
+        <result column="outside_code" jdbcType="VARCHAR" property="outsideCode"/>
+        <result column="platform_code" jdbcType="VARCHAR" property="platformCode"/>
+        <result column="carrier_code" jdbcType="VARCHAR" property="carrierCode"/>
+        <result column="car_num" jdbcType="VARCHAR" property="carNum"/>
+        <result column="driver" jdbcType="VARCHAR" property="driver"/>
+        <result column="telephone" jdbcType="VARCHAR" property="telephone"/>
+        <result column="platform_type" jdbcType="VARCHAR" property="platformType"/>
+        <result column="expect_num" jdbcType="INTEGER" property="expectNum"/>
+        <result column="receive_num" jdbcType="INTEGER" property="receiveNum"/>
+        <result column="refuse_num" jdbcType="INTEGER" property="refuseNum"/>
+        <result column="shelf_num" jdbcType="INTEGER" property="shelfNum"/>
+        <result column="quality_num" jdbcType="INTEGER" property="qualityNum"/>
+        <result column="second_num" jdbcType="INTEGER" property="secondNum"/>
+        <result column="clear_time" jdbcType="TIMESTAMP" property="clearTime"/>
+        <result column="predict_bulk" jdbcType="DOUBLE" property="predictBulk"/>
+        <result column="predict_weight" jdbcType="DOUBLE" property="predictWeight"/>
+        <result column="last_shelf_time" jdbcType="TIMESTAMP" property="lastShelfTime"/>
+        <result column="last_receive_time" jdbcType="TIMESTAMP" property="lastReceiveTime"/>
+        <result column="last_quality_time" jdbcType="TIMESTAMP" property="lastQualityTime"/>
+        <result column="statement" jdbcType="VARCHAR" property="statement"/>
+        <result column="hang_up" jdbcType="INTEGER" property="hangUp"/>
+        <result column="create_id" jdbcType="VARCHAR" property="createId"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="modify_id" jdbcType="VARCHAR" property="modifyId"/>
+        <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate"/>
+        <result column="place_id" jdbcType="VARCHAR" property="placeId"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+    </resultMap>
+
+    <select id="selectByManyCondition" parameterType="map" resultMap="BaseResultMap">
+        select DISTINCT o.* from o_receive_order as o LEFT JOIN o_receive_detail AS d ON o.receive_id=d.receive_id
+        <where>
+            <if test="receiveCode != null and receiveCode != '' ">
+                and o.receive_code like concat('%', #{receiveCode}, '%')
+            </if>
+            <if test="orderStatus != null ">
+                and o.order_status = #{orderStatus}
+            </if>
+            <if test="gooderCode != null and gooderCode != '' ">
+                and o.gooder_code = #{gooderCode}
+            </if>
+
+            <if test="providerCode != null and providerCode != '' ">
+                and o.provider_code = #{providerCode}
+            </if>
+            <if test="carrierCode != null and carrierCode != '' ">
+                and o.carrier_code = #{carrierCode}
+            </if>
+            <if test="orgCode != null and orgCode != '' ">
+                and o.org_code = #{orgCode}
+            </if>
+            <if test="receiveType != null and receiveType != '' ">
+                and o.receive_type like concat('%', #{receiveType}, '%')
+            </if>
+
+            <if test="appointTimeStart != null and appointTimeEnd != null">
+                and ( o.appoint_time between #{appointTimeStart} and #{appointTimeEnd})
+            </if>
+
+            <if test="createTimeStart != null  and createTimeEnd != null ">
+                and ( o.create_date between #{createTimeStart} and #{createTimeEnd})
+            </if>
+            <if test="receiveTimeStart != null and receiveTimeEnd != null">
+                and ( o.last_receive_time between #{receiveTimeStart} and #{receiveTimeEnd})
+            </if>
+            <if test="qualityTimeStart != null  and qualityTimeEnd != null ">
+                and ( o.last_quality_time between #{qualityTimeStart} and #{qualityTimeEnd})
+            </if>
+            <if test="shelfTimeStart != null and shelfTimeEnd != null ">
+                and ( o.last_shelf_time between #{shelfTimeStart} and #{shelfTimeEnd})
+            </if>
+            <if test="carNum != null and carNum != ''">
+                and o.car_num like concat('%', #{carNum},'%')
+            </if>
+            <if test="driver != null and driver != ''">
+                and o.driver like concat('%', #{driver},'%')
+            </if>
+            <if test="outsideCode != null and outsideCode != ''">
+                and o.outside_code like concat('%', #{outsideCode},'%')
+            </if>
+            <if test="purchaseCode != null and purchaseCode != ''">
+                and o.purchase_code like concat('%', #{purchaseCode},'%')
+            </if>
+            <if test="modifyId != null and modifyId != ''">
+                and o.modify_id like concat('%', #{modifyId}, '%')
+            </if>
+            <if test="goodCode != null and goodCode != ''">
+                and d.good_code like concat('%', #{goodCode},'%')
+            </if>
+            <if test="goodName != null and goodName != ''">
+                and d.good_name like concat('%', #{goodName},'%')
+            </if>
+            <if test="placeId!=null and placeId!='' ">
+                AND o.place_id =#{placeId}
+            </if>
+        </where>
+        ORDER BY o.id DESC
+    </select>
+
+    <select id="selectReceiveByProviderCode" parameterType="String" resultType="String">
+        SELECT receive_id
+        FROM o_receive_order
+        WHERE provider_Code = #{providerCode}
+    </select>
+    <select id="selectReceiveByCarrierCode" parameterType="String" resultType="String">
+        SELECT receive_id
+        FROM o_receive_order
+        WHERE carrier_code = #{carrierCode}
+    </select>
+
+    <select id="selectByReceiveId" parameterType="String" resultMap="BaseResultMap">
+        SELECT *
+        FROM o_receive_order
+        WHERE receive_id = #{receiveId}
+    </select>
+
+    <!-- rk 2018/05/02 -->
+    <select id="findReceiveOrderByMaxId" resultMap="BaseResultMap">
+        SELECT
+            receive_id,
+            id,
+            receive_code,
+            gooder_code,
+            receive_type,
+            order_status,
+            provider_code,
+            purchase_code,
+            outside_code,
+            carrier_code
+        FROM o_receive_order
+        WHERE id = (SELECT MAX(id)
+                    FROM o_receive_order)
+    </select>
+
+    <select id="selectMaxId" resultType="Integer">
+        SELECT max(id)
+        FROM o_receive_order
+    </select>
+
+    <select id="selectReceiveIdByReceiveCode" parameterType="String" resultType="String">
+        SELECT receive_id
+        FROM o_receive_order
+        WHERE receive_code = #{receiveCode}
+    </select>
+    <select id="selectAllOutsideCode" parameterType="String"  resultMap="BaseResultMap">
+        SELECT outside_code
+        FROM o_receive_order
+    </select>
+    <update id="updateFields" parameterType="java.util.Map">
+        UPDATE o_receive_order
+        SET appoint_time = #{appointTime}, car_num = #{carNum}, driver = #{driver}, telephone = #{telephone},carrier_code=#{carrierCode},
+            platform_type=#{platformType},platform_code=#{platformCode},receive_type=#{receiveType},org_code=#{orgCode},statement=#{statement}
+        WHERE receive_id=#{receiveId}
+    </update>
+
+    <update id="updateOrderStatusByPurchaseCode">
+        UPDATE o_receive_order SET order_status=#{status} WHERE purchase_code=#{purchaseCode}
+    </update>
+
+    <select id="selectReceiveCodeByReceiveId" parameterType="String" resultType="String">
+        SELECT  receive_code FROM o_receive_order WHERE receive_id=#{receiveId}
+    </select>
+
+    <select id="selectStatusByReceiveCode" parameterType="String" resultType="Integer">
+        SELECT order_status FROM o_receive_order WHERE receive_code=#{receiveCode}
+    </select>
+
+    <select id="selectGooderCodeByReceiveCode" parameterType="String" resultType="String">
+        SELECT gooder_code FROM o_receive_order WHERE receive_code=#{receiveCode}
+    </select>
+
+
+
+</mapper>

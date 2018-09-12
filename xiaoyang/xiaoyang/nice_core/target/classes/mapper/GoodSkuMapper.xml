@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.miniprogram.dao.GoodSkuMapper">
+  <resultMap id="BaseResultMap" type="com.nice.miniprogram.model.GoodSku">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="spu_code" jdbcType="VARCHAR" property="spuCode" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="good_color" jdbcType="VARCHAR" property="goodColor" />
+    <result column="good_size" jdbcType="VARCHAR" property="goodSize" />
+    <result column="brokerage_link" jdbcType="VARCHAR" property="brokerageLink" />
+    <result column="brokerage_ratio" jdbcType="DOUBLE" property="brokerageRatio" />
+    <result column="normal_price" jdbcType="DOUBLE" property="normalPrice" />
+    <result column="seckill_price" jdbcType="DOUBLE" property="seckillPrice" />
+    <result column="discount_method" jdbcType="VARCHAR" property="discountMethod" />
+    <result column="discount_link" jdbcType="VARCHAR" property="discountLink" />
+    <result column="discount_content" jdbcType="VARCHAR" property="discountContent" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="creater" jdbcType="VARCHAR" property="creater" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="modifier" jdbcType="VARCHAR" property="modifier" />
+    <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+  </resultMap>
+  
+  <select id="getBySku" parameterType="String" resultMap="BaseResultMap">
+    select * from x_good_sku
+    where sku_code = #{skuCode}
+  </select>
+  <select id="getBySpu" parameterType="String" resultMap="BaseResultMap">
+    select * from x_good_sku
+    where spu_code = #{spuCode}
+  </select>
+
+
+  <resultMap id="BaseVoResultMap" type="com.nice.miniprogram.vo.GoodSkuVo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="spu_code" jdbcType="VARCHAR" property="spuCode" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="good_color" jdbcType="VARCHAR" property="goodColor" />
+    <result column="good_size" jdbcType="VARCHAR" property="goodSize" />
+    <result column="brokerage_link" jdbcType="VARCHAR" property="brokerageLink" />
+    <result column="brokerage_ratio" jdbcType="DOUBLE" property="brokerageRatio" />
+    <result column="normal_price" jdbcType="DOUBLE" property="normalPrice" />
+    <result column="seckill_price" jdbcType="DOUBLE" property="seckillPrice" />
+    <result column="discount_method" jdbcType="VARCHAR" property="discountMethod" />
+    <result column="discount_link" jdbcType="VARCHAR" property="discountLink" />
+    <result column="discount_content" jdbcType="VARCHAR" property="discountContent" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="creater" jdbcType="VARCHAR" property="creater" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="modifier" jdbcType="VARCHAR" property="modifier" />
+    <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+
+    <result column="use_num" jdbcType="INTEGER" property="useNum" />
+    <result column="spu_name" jdbcType="VARCHAR" property="spuName" />
+    <result column="click_num" jdbcType="INTEGER" property="clickNum" />
+    <result column="collar_num" jdbcType="INTEGER" property="collarNum" />
+
+    <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
+    <result column="seat_code" jdbcType="VARCHAR" property="seatCode" />
+    <result column="spu_name" jdbcType="VARCHAR" property="spuName" />
+    <result column="place_id" jdbcType="VARCHAR" property="placeId" />
+  </resultMap>
+
+  <select id="getGoodList" parameterType="Map" resultMap="BaseVoResultMap">
+    select sku.* ,s.use_num
+    from x_good_sku sku
+    right join s_seat_stock s on s.good_code = sku.sku_code
+    where 1=1 and (s.freeze_status=0 or s.freeze_status is null)
+    <if test="seatCode !=null and seatCode != ''">
+      and s.seat_code = #{seatCode}
+    </if>
+  </select>
+
+  <select id="getSkuListByParams" resultMap="BaseVoResultMap" parameterType="Map">
+    SELECT
+    sku.*,
+    s.use_num ,
+    spu.spu_name,
+    c.click_num,
+    c.collar_num
+    FROM
+    x_good_sku sku
+    right JOIN ( SELECT good_code, SUM(use_num) use_num,seat_code FROM s_seat_stock WHERE freeze_status = 0 OR freeze_status IS NULL GROUP BY good_code ) s
+    ON s.good_code = sku.sku_code
+    LEFT JOIN x_good_count c ON c.sku_code = sku.sku_code
+    LEFT JOIN x_good_spu spu ON spu.spu_code = sku.spu_code
+    LEFT JOIN g_good_style style ON style.id = spu.style_id
+    where 1=1
+    <if test="seatCode!=null and seatCode!=''">
+      and s.seat_code = #{seatCode}
+    </if>
+    <if test="spuCode!=null and spuCode!=''">
+      and sku.spu_code = #{spuCode}
+    </if>
+    <if test="isNewProduct!=null and isNewProduct!=0">
+      and sku.createtime > DATE_SUB(NOW(),INTERVAL 15 DAY)
+    </if>
+    <if test="title!=null and title !=''">
+      and (spu.spu_name like concat('%',#{title},'%') or style.name like concat('%',#{title},'%'))
+    </if>
+    order by sku.id desc
+    <if test="start!=null and size!=null">
+      limit #{start},#{size}
+    </if>
+  </select>
+
+  <select id="getSkuVoBySkuCode" resultMap="BaseVoResultMap" parameterType="map">
+    SELECT
+    sku.*,
+    s.use_num,
+    spu.spu_name,
+    c.click_num,
+    c.collar_num
+    FROM
+    x_good_sku sku
+    RIGHT JOIN ( SELECT good_code, SUM(use_num) use_num FROM s_seat_stock WHERE freeze_status = 0 OR freeze_status IS NULL GROUP BY good_code ) s ON s.good_code = sku.sku_code
+    LEFT JOIN x_good_count c ON c.sku_code = sku.sku_code
+    LEFT JOIN x_good_spu spu ON spu.spu_code = sku.spu_code
+    where 1=1
+    <if test="skuCode!=null and skuCode!=''">
+      and sku.sku_code = #{skuCode}
+    </if>
+  </select>
+
+  <select id="findPlaceByParams" parameterType="map" resultMap="BaseVoResultMap">
+    SELECT
+    sku.*,
+    i.area_code,
+    s.seat_code,
+    spu.spu_name,
+    s.use_num,
+    s.place_id
+    FROM
+    x_good_sku sku
+    left join x_good_spu spu on spu.spu_code = sku.spu_code
+    right join s_seat_stock s on sku.sku_code = s.good_code
+    LEFT JOIN i_store_seat i ON s.seat_code = i.seat_code
+    WHERE 1=1 and (s.freeze_status=0 or s.freeze_status is null) and i.seat_type &lt;&gt; '暂存'
+    <if test="skuCode !=null and skuCode !=''">
+      and sku.sku_code=#{skuCode}
+    </if>
+    <if test="placeNumber !=null and placeNumber !=''">
+      and i.place_number=#{placeNumber}
+    </if>
+  </select>
+</mapper>

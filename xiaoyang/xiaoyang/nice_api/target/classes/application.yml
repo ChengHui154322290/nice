@@ -1,0 +1,85 @@
+spring:
+    datasource:
+        # 配置druid数据库连接池
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        filters: stat
+        maxActive: 20
+        initialSize: 1
+        maxWait: 60000
+        minIdle: 1
+        timeBetweenEvictionRunsMillis: 60000
+        minEvictableIdleTimeMillis: 300000
+        validationQuery: select 'x'
+        testWhileIdle: true
+        testOnBorrow: false
+        testOnReturn: false
+        poolPreparedStatements: true
+        maxOpenPreparedStatements: 20
+
+    servlet:
+      multipart:
+        max-file-size: 10Mb
+        max-request-size: 30Mb
+    profiles:
+      active: serdev
+
+logging:
+  config: classpath:logback-spring.xml
+  level:
+    com.nice: debug
+
+---
+# aliyun开发环境配置
+server.port: 18089
+spring:
+  profiles: serdev
+  datasource:
+      url: jdbc:mysql://127.0.0.1:3306/nice_record?useSSL=false
+      username: root
+      password: 123456
+  redis:
+      host: 127.0.0.1
+    #    password: nice1234
+      port: 6379
+      database: 4
+      max-idle: 100
+      min-idle: 1
+      max-active: 1000
+      max-wait: -1
+---
+# aliyun开发环境配置
+server.port: 18090
+spring:
+  profiles: server
+  datasource:
+      url: jdbc:mysql://127.0.0.1:3306/nice_depot?useSSL=false
+      username: root
+      password: 123456
+  redis:
+      host: 127.0.0.1
+    #    password: nice1234
+      port: 6379
+      database: 8
+      max-idle: 100
+      min-idle: 1
+      max-active: 1000
+      max-wait: -1
+---
+# record环境配置
+server.port: 8090
+spring:
+  profiles: record
+  datasource:
+      url: jdbc:mysql://192.168.202.200:3306/nice_record?useSSL=false
+      username: root
+      password: nice123!
+  redis:
+      host: 192.168.202.200
+  #    password: nice1234
+      port: 6379
+      database: 4
+      max-idle: 100
+      min-idle: 1
+      max-active: 1000
+      max-wait: -1

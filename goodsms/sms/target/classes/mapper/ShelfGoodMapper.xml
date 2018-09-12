@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.ShelfGoodMapper">
+  <resultMap id="BaseResultMap" type="com.nice.good.model.ShelfGood">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="stock_id" jdbcType="VARCHAR" property="stockId" />
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="gooder_name" jdbcType="VARCHAR" property="gooderName" />
+    <result column="gooder_id" jdbcType="VARCHAR" property="gooderId" />
+    <result column="commodity_code" jdbcType="VARCHAR" property="commodityCode" />
+    <result column="good_model" jdbcType="VARCHAR" property="goodModel" />
+    <result column="good_code" jdbcType="VARCHAR" property="goodCode" />
+    <result column="good_name" jdbcType="VARCHAR" property="goodName" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="expect_num" jdbcType="INTEGER" property="expectNum" />
+    <result column="receive_num" jdbcType="INTEGER" property="receiveNum" />
+    <result column="lpn" jdbcType="VARCHAR" property="lpn" />
+    <result column="seate_name" jdbcType="VARCHAR" property="seateName" />
+    <result column="good_sign" jdbcType="INTEGER" property="goodSign" />
+    <result column="create_id" jdbcType="VARCHAR" property="createId" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="modify_id" jdbcType="VARCHAR" property="modifyId" />
+    <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+  </resultMap>
+</mapper>

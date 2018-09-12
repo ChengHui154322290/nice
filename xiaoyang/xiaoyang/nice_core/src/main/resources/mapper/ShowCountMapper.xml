@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.miniprogram.dao.ShowCountMapper">
+  <resultMap id="BaseResultMap" type="com.nice.miniprogram.model.ShowCount">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="show_room_id" jdbcType="INTEGER" property="showRoomId" />
+    <result column="exhibition_room_id" jdbcType="INTEGER" property="exhibitionRoomId" />
+    <result column="type" jdbcType="TINYINT" property="type" />
+    <result column="click_num" jdbcType="INTEGER" property="clickNum" />
+    <result column="bespeak_num" jdbcType="INTEGER" property="bespeakNum" />
+  </resultMap>
+
+  <select id="getByShowRoomId" parameterType="Integer" resultMap="BaseResultMap">
+    select * from x_show_count where show_room_id = #{showRoomId}
+  </select>
+</mapper>

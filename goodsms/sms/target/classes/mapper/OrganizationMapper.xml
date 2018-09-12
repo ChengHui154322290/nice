@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.OrganizationMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.Organization">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="org_id" jdbcType="VARCHAR" property="orgId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="org_code" jdbcType="VARCHAR" property="orgCode"/>
+        <result column="up_code" jdbcType="VARCHAR" property="upCode"/>
+        <result column="org_name" jdbcType="VARCHAR" property="orgName"/>
+        <result column="statement" jdbcType="VARCHAR" property="statement"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="createtime" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    </resultMap>
+    <select id="findIdByOrgCode" parameterType="String" resultType="String">
+        SELECT org_id
+        FROM b_organization
+        WHERE org_code = #{orgCode}
+    </select>
+
+    <select id="selectByUpCode" parameterType="String" resultType="String">
+        SELECT org_code FROM b_organization WHERE up_code =#{orgCode}
+    </select>
+
+    <select id="finaAllSonByUpCode" parameterType="String" resultMap="BaseResultMap">
+        SELECT * FROM b_organization WHERE up_code=#{orgCode}
+    </select>
+
+    <select id="selectAllOrgName" resultType="String">
+        SELECT org_name FROM b_organization
+    </select>
+
+    <!-- rk 2018/04/28 -->
+    <select id="findOrgCodes" resultType="String">
+        SELECT org_code FROM b_organization
+    </select>
+
+    <select id="newFindIdByOrgCode" resultType="String">
+        SELECT org_code FROM b_organization WHERE  org_id=#{orgId}
+    </select>
+
+    <select id="selectAllOrgCode" resultType="String">
+       select org_code  FROM o_receive_order UNION  select org_code  from o_order
+    </select>
+</mapper>

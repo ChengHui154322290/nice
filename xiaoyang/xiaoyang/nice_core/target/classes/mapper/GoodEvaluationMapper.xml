@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.miniprogram.dao.GoodEvaluationMapper">
+  <resultMap id="BaseResultMap" type="com.nice.miniprogram.model.GoodEvaluation">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="spu_code" jdbcType="VARCHAR" property="spuCode" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="score" jdbcType="DOUBLE" property="score" />
+    <result column="homogeneity" jdbcType="DOUBLE" property="homogeneity" />
+    <result column="fans_praise" jdbcType="DOUBLE" property="fansPraise" />
+    <result column="evaluation" jdbcType="VARCHAR" property="evaluation" />
+    <result column="creater" jdbcType="VARCHAR" property="creater" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="modifier" jdbcType="VARCHAR" property="modifier" />
+    <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime" />
+  </resultMap>
+
+  <select id="listFeedback" parameterType="Map" resultMap="BaseResultMap">
+    select * from x_good_evaluation
+    where 1=1
+
+    <if test="skuCodes !=null ">
+      and sku_code in
+      <foreach collection="skuCodes" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    <!--<if test="type !=null "> -->
+      <if test="type !=null and type==1">
+        and score+homogeneity+fans_praise <![CDATA[ >= ]]> 13
+      </if>
+      <if test="type !=null and type==2 ">
+        and score+homogeneity+fans_praise <![CDATA[ >= ]]> 7
+        and score+homogeneity+fans_praise <![CDATA[ < ]]> 13
+      </if>
+      <if test="type !=null and type==3 ">
+        and score+homogeneity+fans_praise <![CDATA[ < ]]> 7
+      </if>
+    <!--</if>-->
+    limit #{start},#{size}
+  </select>
+
+  <select id="getCount" parameterType="Map" resultType="Integer">
+    select COUNT(id) from x_good_evaluation
+    where 1=1
+    <if test="spuCode !=null and spuCode != '' ">
+      and spu_code = #{spuCode}
+    </if>
+    <if test="skuCode !=null and skuCode != '' ">
+      and sku_code = #{skuCode}
+    </if>
+    <if test="type !=null and type==1">
+      and score+homogeneity+fans_praise <![CDATA[ >= ]]> 13
+    </if>
+    <if test="type !=null and type==2 ">
+      and score+homogeneity+fans_praise <![CDATA[ >= ]]> 7
+      and score+homogeneity+fans_praise <![CDATA[ < ]]> 13
+    </if>
+    <if test="type !=null and type==3 ">
+      and score+homogeneity+fans_praise <![CDATA[ < ]]> 7
+    </if>
+
+  </select>
+</mapper>

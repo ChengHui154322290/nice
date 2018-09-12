@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.miniprogram.dao.StoreAreaMapper">
+  <resultMap id="BaseResultMap" type="com.nice.miniprogram.model.StoreArea">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="area_id" jdbcType="VARCHAR" property="areaId" />
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="place_number" jdbcType="VARCHAR" property="placeNumber" />
+    <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
+    <result column="area_name" jdbcType="VARCHAR" property="areaName" />
+    <result column="area_type" jdbcType="VARCHAR" property="areaType" />
+    <result column="statement" jdbcType="VARCHAR" property="statement" />
+    <result column="creater" jdbcType="VARCHAR" property="creater" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="modifier" jdbcType="VARCHAR" property="modifier" />
+    <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+  </resultMap>
+
+  <select id="selectByParams" resultMap="BaseResultMap" parameterType="map">
+    select * from i_store_seat 
+    where 1=1 
+    <if test="placeNumber!=null and placeNumber!=''">
+      and place_number=#{placeNumber}
+    </if>
+  </select>
+</mapper>

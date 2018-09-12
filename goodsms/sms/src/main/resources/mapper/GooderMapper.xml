@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.GooderMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.Gooder">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="gooder_id" jdbcType="VARCHAR" property="gooderId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="gooder_name" jdbcType="VARCHAR" property="gooderName"/>
+        <result column="gooder_code" jdbcType="VARCHAR" property="gooderCode"/>
+        <result column="company" jdbcType="VARCHAR" property="company"/>
+        <result column="postcode" jdbcType="INTEGER" property="postcode"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="return_cycle" jdbcType="INTEGER" property="returnCycle"/>
+        <result column="country" jdbcType="VARCHAR" property="country"/>
+        <result column="province" jdbcType="VARCHAR" property="province"/>
+        <result column="city" jdbcType="VARCHAR" property="city"/>
+        <result column="district" jdbcType="VARCHAR" property="district"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="m_linker" jdbcType="VARCHAR" property="mLinker"/>
+        <result column="m_phone" jdbcType="VARCHAR" property="mPhone"/>
+        <result column="m_fax" jdbcType="VARCHAR" property="mFax"/>
+        <result column="m_telephone" jdbcType="VARCHAR" property="mTelephone"/>
+        <result column="m_mail" jdbcType="VARCHAR" property="mMail"/>
+        <result column="s_linker" jdbcType="VARCHAR" property="sLinker"/>
+        <result column="s_phone" jdbcType="VARCHAR" property="sPhone"/>
+        <result column="s_fax" jdbcType="VARCHAR" property="sFax"/>
+        <result column="s_telephone" jdbcType="VARCHAR" property="sTelephone"/>
+        <result column="s_mail" jdbcType="VARCHAR" property="sMail"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="createtime" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    </resultMap>
+
+
+    <!-- 通过 gooder_name 在 n_gooder 表中查找 gooder_code  2018/05/21 16:41  -->
+    <select id="findGooderCodeByGooderName" parameterType="String" resultType="String">
+      SELECT gooder_code FROM n_gooder WHERE gooder_name=#{gooder_name}
+    </select>
+
+
+    <select id="findIdByGooderCode" parameterType="String" resultType="String">
+      select gooder_id from  n_gooder where gooder_code = #{gooderCode}
+    </select>
+
+
+    <select id="findGooderCodes" resultType="String">
+        SELECT DISTINCT gooder_code FROM g_good
+    </select>
+
+
+    <select id="findAllGooderNames" resultType="String">
+        SELECT DISTINCT gooder_name FROM n_gooder
+    </select>
+
+
+    <select id="selectGooderCodeByAreaId" parameterType="String" resultType="String">
+        SELECT gooder_code FROM n_gooder  WHERE gooder_id=(SELECT gooder_id FROM n_gooder_area WHERE area_id=#{areaId})
+    </select>
+
+    <select id="selectGooderIdByGooderName" parameterType="String" resultType="String">
+        SELECT gooder_id FROM n_gooder WHERE gooder_name=#{gooderName}
+    </select>
+
+
+</mapper>

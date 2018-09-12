@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.BespeakOrderMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.wx_model.BespeakOrder">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="order_code" jdbcType="VARCHAR" property="orderCode"/>
+        <result column="bespeak_time_start" jdbcType="TIMESTAMP" property="bespeakTimeStart"/>
+        <result column="bespeak_time_end" jdbcType="TIMESTAMP" property="bespeakTimeEnd"/>
+        <result column="show_room_id" jdbcType="INTEGER" property="showRoomId"/>
+        <result column="own_id" jdbcType="INTEGER" property="ownId"/>
+        <result column="operator_id" jdbcType="INTEGER" property="operatorId"/>
+        <result column="operator_type" jdbcType="TINYINT" property="operatorType"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="createtime" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime"/>
+        <result column="seat_id" jdbcType="VARCHAR" property="seatId"/>
+        <result column="seat_name" jdbcType="VARCHAR" property="seatName"/>
+        <result column="exhibition_room_id" jdbcType="TIMESTAMP" property="exhibitionRoomId"/>
+        <result column="exhibition_room_name" jdbcType="TIMESTAMP" property="exhibitionRoomName"/>
+
+    </resultMap>
+
+    <select id="findStatusByOwnId" resultType="Integer" parameterType="Integer">
+     SELECT
+      DISTINCT
+            bes. STATUS
+      FROM
+            x_bespeak_order bes
+       WHERE
+            bes.own_id =#{ownId}
+    </select>
+
+    <select id="selectMaxId" resultType="Integer">
+      SELECT max(id)
+      FROM x_bespeak_order
+    </select>
+
+    <select id="getByOrderCode" resultMap="BaseResultMap" parameterType="String">
+        SELECT
+        bes.*
+        FROM
+        x_bespeak_order bes
+        WHERE
+        bes.order_code =#{orderCode}
+    </select>
+
+    <select id="selectBespeakAll" resultMap="BookingSlipVo" parameterType="com.nice.good.wx_model.BookingSlipVo">
+        SELECT
+        DISTINCT
+        bes.order_code,
+        room.place_number,
+        place.exhibition,
+        room.code as showRoomCode,
+        room.seat_code as targetSeatCode,
+        bes.status,
+        bes.creater,
+        bes.createtime,
+        bes.modifytime,
+        bes.bespeak_time_start,
+        bes.remark,
+        bes.bespeak_time_end,
+        user.account
+        FROM
+        x_bespeak_order bes
+        LEFT JOIN v_show_room_info room ON bes.show_room_id =room.id
+        LEFT JOIN a_sys_place place ON room.place_number = place.place_number
+        LEFT JOIN x_user user ON bes.own_id = user.id
+        where 1=1
+        <if test="orderCode != null and orderCode != ''">
+            and bes.order_code like concat('%',#{orderCode},'%')
+        </if>
+        <if test="status != null ">
+            <if test="status == 0 ">
+                and (bes.status = 0 or bes.status = 3)
+            </if>
+            <if test="status != 0 ">
+              and bes.status = #{status}
+            </if>
+
+        </if>
+        <if test="placeNumber != null and placeNumber != ''">
+            and room.place_number like concat('%',#{placeNumber},'%')
+        </if>
+        <if test="creater != null and creater != ''">
+            and bes.creater like concat('%',#{creater},'%')
+        </if>
+        <if test="targetSeatCode != null and targetSeatCode != ''">
+            and room.seat_code like concat('%',#{targetSeatCode},'%')
+        </if>
+        <if test="bespeakTimeStart!=null and bespeakTimeEnd!=null">
+            AND bes.bespeak_time_start BETWEEN #{bespeakTimeStart,jdbcType=TIMESTAMP} AND
+            #{bespeakTimeEnd,jdbcType=TIMESTAMP}
+        </if>
+        <if test="createtime!=null and creaetimeEnd!=null ">
+            AND bes.createtime BETWEEN #{createtime,jdbcType=TIMESTAMP} AND #{creaetimeEnd,jdbcType=TIMESTAMP}
+        </if>
+        order BY bes.createtime DESC
+
+    </select>
+
+    <select id="selectCollarAll" resultMap="BookingSlipVo" parameterType="com.nice.good.wx_model.BookingSlipVo">
+        SELECT
+        DISTINCT
+        collar.order_code,
+        place.place_number,
+        place.exhibition,
+        detail.target_seat_code as targetSeatCode,
+        collar. STATUS,
+        collar.creater,
+        collar.createtime,
+        collar.modifytime,
+        collar.remark,
+        ues.account
+        FROM
+        x_collar_order collar
+        LEFT JOIN x_order_detail detail ON collar.id = detail.order_id
+        LEFT JOIN i_store_seat stock ON detail.target_seat_code = stock.seat_code
+        LEFT JOIN a_sys_place place ON place.place_id = stock.place_id
+        LEFT JOIN x_user ues ON collar.own_id = ues.id
+        WHERE order_type=0 and place.place_id=#{placeId}
+        <if test="orderCode != null and orderCode != ''">
+            and collar.order_code like concat('%',#{orderCode},'%')
+        </if>
+        <if test="status != null ">
+            and collar.status = #{status}
+        </if>
+        <if test="placeNumber != null and placeNumber != ''">
+            and place.place_number like concat('%',#{placeNumber},'%')
+        </if>
+        <if test="creater != null and creater != ''">
+            and collar.creater like concat('%',#{creater},'%')
+        </if>
+        <if test="targetSeatCode != null and targetSeatCode != ''">
+            and detail.target_seat_code like concat('%',#{targetSeatCode},'%')
+        </if>
+        <if test="createtime!=null and creaetimeEnd!=null ">
+            AND collar.createtime BETWEEN #{createtime,jdbcType=TIMESTAMP} AND #{creaetimeEnd,jdbcType=TIMESTAMP}
+        </if>
+        order by collar.createtime DESC
+
+    </select>
+
+
+    <select id="selectBespeak" resultMap="BespeakOrderVoResultMap" parameterType="String">
+        SELECT
+            bes.*
+        FROM
+            x_bespeak_order bes
+        WHERE
+           bes.order_code =#{orderCode}
+           order by bes.createtime
+    </select>
+
+    <resultMap id="BookingSlipVo" type="com.nice.good.wx_model.BookingSlipVo">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <result column="order_code" jdbcType="VARCHAR" property="orderCode"/>
+        <result column="bespeak_time_start" jdbcType="TIMESTAMP" property="bespeakTimeStart"/>
+        <result column="bespeak_time_end" jdbcType="TIMESTAMP" property="bespeakTimeEnd"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="createtime" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime"/>
+        <result column="exhibition" jdbcType="VARCHAR" property="exhibition"/>
+        <result column="place_number" jdbcType="VARCHAR" property="placeNumber"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="place_id" jdbcType="VARCHAR" property="placeId"/>
+
+
+    </resultMap>
+
+    <resultMap id="BespeakOrderVoResultMap" type="com.nice.good.wx_model.BespeakOrderVo">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="order_code" jdbcType="VARCHAR" property="orderCode"/>
+        <result column="bespeak_time_start" jdbcType="TIMESTAMP" property="bespeakTimeStart"/>
+        <result column="bespeak_time_end" jdbcType="TIMESTAMP" property="bespeakTimeEnd"/>
+        <result column="show_room_id" jdbcType="INTEGER" property="showRoomId"/>
+        <result column="own_id" jdbcType="INTEGER" property="ownId"/>
+        <result column="operator_id" jdbcType="INTEGER" property="operatorId"/>
+        <result column="operator_type" jdbcType="TINYINT" property="operatorType"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="createtime" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime"/>
+        <result column="seat_id" jdbcType="VARCHAR" property="seatId"/>
+        <result column="seat_name" jdbcType="VARCHAR" property="seatName"/>
+    </resultMap>
+
+    <delete id="deleteByOrderCode" parameterType="String">
+        DELETE FROM x_bespeak_order WHERE order_code=#{orderCode}
+    </delete>
+
+</mapper>

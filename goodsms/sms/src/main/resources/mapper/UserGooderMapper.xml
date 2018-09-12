@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.UserGooderMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.UserGooder">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="key_id" jdbcType="VARCHAR" property="keyId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="gooder_code" jdbcType="VARCHAR" property="gooderCode"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_id" jdbcType="VARCHAR" property="createId"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="modify_id" jdbcType="VARCHAR" property="modifyId"/>
+        <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+    </resultMap>
+
+    <!-- 通过 username 查询 List<String> gooderName  2018/05/21 14:09  -->
+    <select id="findGooderNameByUsername" parameterType="String" resultType="String">
+        SELECT gooder_name
+        FROM n_gooder ng
+            LEFT JOIN a_user_gooder ug ON ug.gooder_code = ng.gooder_code
+        WHERE username = #{username}
+    </select>
+
+    <!-- 通过 username 查询 List<String> gooderCode -->
+    <select id="findGooderCodeByUsername" parameterType="String" resultType="String">
+        SELECT gooder_code
+        FROM a_user_gooder
+        WHERE username = #{username}
+    </select>
+
+    <!-- 通过 username 删除 a_user_gooder 表中对应的数据 -->
+    <delete id="deleteUserGooderByUsername" parameterType="String">
+        DELETE FROM a_user_gooder
+        WHERE username = #{username}
+    </delete>
+
+    <select id="selectGooderCodeByUserName" resultType="String">
+        SELECT gooder_code
+        FROM a_user_gooder
+        WHERE username = #{username}
+    </select>
+
+    <select id="selectUserNameByGooderCode" parameterType="String" resultType="String">
+        SELECT username
+        FROM a_user_gooder
+        WHERE gooder_code = #{gooderCode}
+    </select>
+
+</mapper>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.RoomPictureMapper">
+  <resultMap id="BaseResultMap" type="com.nice.good.wx_model.RoomPicture">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="img_id" jdbcType="BIGINT" property="imgId" />
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="img_name" jdbcType="VARCHAR" property="imgName" />
+    <result column="img_url" jdbcType="VARCHAR" property="imgUrl" />
+    <result column="creater" jdbcType="VARCHAR" property="creater" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="modifier" jdbcType="VARCHAR" property="modifier" />
+    <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime" />
+    <result column="room_id" jdbcType="INTEGER" property="roomId" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+  </resultMap>
+</mapper>

@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.GoodMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.Good">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="good_id" jdbcType="VARCHAR" property="goodId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="gooder_code" jdbcType="VARCHAR" property="gooderCode"/>
+        <result column="commodity_code" jdbcType="VARCHAR" property="commodityCode"/>
+        <result column="good_code" jdbcType="VARCHAR" property="goodCode"/>
+        <result column="good_model" jdbcType="VARCHAR" property="goodModel"/>
+        <result column="good_name" jdbcType="VARCHAR" property="goodName"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="pack_code" jdbcType="VARCHAR" property="packCode"/>
+        <result column="bulk" jdbcType="DOUBLE" property="bulk"/>
+        <result column="net_weight" jdbcType="DOUBLE" property="netWeight"/>
+        <result column="tare_weight" jdbcType="DOUBLE" property="tareWeight"/>
+        <result column="rough_weight" jdbcType="DOUBLE" property="roughWeight"/>
+        <result column="property" jdbcType="VARCHAR" property="property"/>
+        <result column="brand" jdbcType="VARCHAR" property="brand"/>
+        <result column="period" jdbcType="VARCHAR" property="period"/>
+        <result column="period_unite" jdbcType="VARCHAR" property="periodUnite"/>
+        <result column="good_link" jdbcType="VARCHAR" property="goodLink"/>
+        <result column="good_color" jdbcType="VARCHAR" property="goodColor"/>
+        <result column="good_size" jdbcType="VARCHAR" property="goodSize"/>
+        <result column="brokerage_link" jdbcType="VARCHAR" property="brokerageLink"/>
+        <result column="brokerage_ratio" jdbcType="DOUBLE" property="brokerageRatio"/>
+        <result column="category_id" jdbcType="INTEGER" property="categoryId"/>
+        <result column="style_id" jdbcType="INTEGER" property="styleId"/>
+        <result column="normal_price" jdbcType="DOUBLE" property="normalPrice"/>
+        <result column="seckill_price" jdbcType="DOUBLE" property="seckillPrice"/>
+        <result column="discount_method" jdbcType="VARCHAR" property="discountMethod"/>
+        <result column="discount_link" jdbcType="VARCHAR" property="discountLink"/>
+        <result column="discount_content" jdbcType="VARCHAR" property="discountContent"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="createtime" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    </resultMap>
+
+    <select id="findIdByCommodityCode" resultType="String">
+        SELECT good_id
+        FROM g_good
+        WHERE gooder_code = #{gooderCode} AND commodity_code = #{commodityCode}
+    </select>
+    <select id="findIdByGoodCode" resultType="String">
+        SELECT good_id
+        FROM g_good
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}
+    </select>
+
+    <select id="selectCommodityCode" resultType="String">
+        SELECT commodity_code
+        FROM g_good
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}
+    </select>
+
+    <select id="selectByConditionMap" parameterType="map" resultMap="BaseResultMap">
+        select g.* from g_good as g
+        <if test="aliasCode != null and aliasCode!='' ">
+            RIGHT join ( select good_id from g_good_alias where alias_code like concat('%',#{aliasCode},'%'))as a
+            on g.good_id = a.good_id
+        </if>
+        <where>
+            <if test="gooderCode != null and gooderCode != ''">
+                and g.gooder_code =#{gooderCode}
+            </if>
+            <if test="status != null ">
+                and g.status = #{status}
+            </if>
+            <if test="commodityCode != null and commodityCode != ''">
+                and g.commodity_code like concat('%',#{commodityCode},'%')
+            </if>
+            <if test="goodModel != null and goodModel != ''">
+                and g.good_model like concat('%',#{goodModel},'%')
+            </if>
+            <if test="goodName != null and goodName != ''">
+                and g.good_name like concat('%',#{goodName},'%')
+            </if>
+
+            <if test="goodCode != null and goodCode != ''">
+                and g.good_code like concat('%',#{goodCode},'%')
+            </if>
+            <if test="packCode != null and packCode != ''">
+                and g.pack_code like concat('%',#{packCode},'%')
+            </if>
+        </where>
+         ORDER BY g.id DESC
+    </select>
+
+    <select id="selectGoodByGooderCode" parameterType="String" resultType="String">
+        SELECT good_id
+        FROM g_good
+        WHERE gooder_code = #{gooderCode}
+    </select>
+
+
+    <select id="findByGoodCondition" parameterType="Map" resultMap="GoodVoResultMap">
+        SELECT
+        good.id,
+        good.gooder_code,
+        good.commodity_code,
+        good.good_code,
+        good.good_model,
+        good.good_name,
+        good.pack_code,
+        good.rough_weight,
+        good.bulk,
+        good.period,
+        good.period_unite,
+        config.put_strategy,
+        config.is_quality
+        FROM g_good AS good LEFT JOIN g_good_config AS config ON good.good_id = config.good_id
+        <where>
+            <if test="gooderCode!=null and gooderCode!=''">
+                AND good.gooder_code LIKE concat('%',#{gooderCode},'%')
+            </if>
+            <if test="goodCode!=null and goodCode!=''">
+                AND good.good_code LIKE concat('%',#{goodCode},'%')
+            </if>
+            <if test="goodModel!=null and goodModel!=''">
+                AND good.good_model LIKE concat('%',#{goodModel},'%')
+            </if>
+            <if test="goodName!=null and goodName!=''">
+                AND  good.good_name LIKE concat('%',#{goodName},'%')
+            </if>
+            <if test="commodityCode!=null and commodityCode!=''">
+                AND  good.commodity_code LIKE concat('%',#{commodityCode},'%')
+            </if>
+        </where>
+    </select>
+
+    <resultMap id="GoodVoResultMap" type="com.nice.good.vo.GoodVo">
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="gooder_code" jdbcType="VARCHAR" property="gooderCode"/>
+        <result column="commodity_code" jdbcType="VARCHAR" property="commodityCode"/>
+        <result column="good_code" jdbcType="VARCHAR" property="goodCode"/>
+        <result column="good_model" jdbcType="VARCHAR" property="goodModel"/>
+        <result column="good_name" jdbcType="VARCHAR" property="goodName"/>
+        <result column="pack_code" jdbcType="VARCHAR" property="packCode"/>
+        <result column="period" jdbcType="VARCHAR" property="period"/>
+        <result column="period_unite" jdbcType="VARCHAR" property="periodUnite"/>
+        <result column="put_strategy" jdbcType="VARCHAR" property="putStrategy"/>
+        <result column="bulk" jdbcType="VARCHAR" property="bulk"/>
+        <result column="rough_weight" jdbcType="VARCHAR" property="rWeight"/>
+        <result column="is_quality" jdbcType="INTEGER" property="isQuality"/>
+        <result column="seat_code" jdbcType="VARCHAR" property="seatCode"/>
+        <result column="good_size" jdbcType="VARCHAR" property="goodSize"/>
+        <result column="now_num" jdbcType="INTEGER" property="nowNum"/>
+        <result column="use_num" jdbcType="INTEGER" property="useNum"/>
+        <result column="good_color" jdbcType="VARCHAR" property="goodColor"/>
+        <result column="good_id" jdbcType="VARCHAR" property="goodId"/>
+        <result column="place_number" jdbcType="VARCHAR" property="placeNumber"/>
+        <result column="area_code" jdbcType="VARCHAR" property="areaCode"/>
+        <result column="normal_price" jdbcType="VARCHAR" property="normalPrice"/>
+    </resultMap>
+
+    <select id="selectgoodCode" parameterType="String" resultType="String">
+        SELECT good_code
+        FROM g_good
+    </select>
+
+    <select id="selectCommodityCodeByGoodCode" parameterType="String" resultType="String">
+        SELECT commodity_code
+        FROM g_good
+        WHERE good_code = #{goodCode}
+    </select>
+
+    <select id="selectGoodIdByPackCode" parameterType="String" resultType="String">
+        SELECT good_id
+        FROM g_good
+        WHERE pack_code = #{packCode}
+    </select>
+
+
+    <select id="selectByGooderCodeAndGoodCode" resultMap="BaseResultMap">
+        SELECT *
+        FROM g_good
+        WHERE gooder_code = #{gooderCode} AND good_code = #{goodCode}
+    </select>
+
+    <select id="selectGooderCode" resultType="String">
+        SELECT DISTINCT gooder_code
+        FROM g_good
+    </select>
+
+    <!--<insert id="batchInsertList">-->
+        <!--insert into g_good-->
+        <!--(good_id,gooder_code,commodity_code,good_code,good_model,good_name,status,pack_code,bulk,net_weight,tare_weight,rough_weight,-->
+        <!--property,period,period_unite,good_link,good_color,good_size,brokerage_link,brokerage_ratio,coupon_link,coupon_amount,normal_price,seckill_price,discount_method,discount_link,discount_content,remark,creater,createtime,modifier,modifytime)-->
+        <!--values-->
+        <!--<foreach item="item" index="index" collection="list" separator=",">-->
+            <!--(#{item.goodId},#{item.gooderCode},#{item.commodityCode},#{item.goodCode},#{item.goodModel},#{item.goodName},-->
+            <!--#{item.status},#{item.packCode},#{item.bulk},#{item.netWeight},#{item.tareWeight},#{item.roughWeight},-->
+            <!--#{item.property},#{item.period},#{item.periodUnite},#{item.goodLink},#{item.goodColor},#{item.goodSize},#{item.brokerageLink},#{item.brokerageRatio},#{item.couponLink},#{item.couponAmount},#{item.normalPrice},#{item.seckillPrice},#{item.discountMethod},#{item.discountLink},#{item.discountContent},#{item.remark},#{item.creater},now(),-->
+            <!--#{item.modifier},now())-->
+        <!--</foreach>-->
+    <!--</insert>-->
+    <select id="selectBygoodCode" resultType="String">
+        SELECT good_code
+        FROM g_good
+        WHERE gooder_code = #{gooderCode}
+    </select>
+    <select id="selectgoodNameModel" resultMap="BaseResultMap">
+        SELECT *
+        FROM g_good
+        WHERE good_code = #{goodCode}
+    </select>
+
+    <!--<select id="findAllGooderCodes" resultType="String">-->
+        <!--SELECT DISTINCT gooder_code-->
+        <!--FROM g_good-->
+    <!--</select>-->
+
+    <select id="selectGoodDetail" resultType="com.nice.good.vo.GoodDetailVo">
+        SELECT
+            gooder_code    AS gooderCode,
+            commodity_code AS commodityCode,
+            good_code      AS goodCode,
+            good_model     AS goodModel,
+            good_name      AS goodName,
+            status,
+            pack_code AS packCode,
+            good_color AS goodColor,
+            good_size AS goodSize,
+            property,
+            remark
+        FROM g_good WHERE  gooder_code = #{gooderCode} AND good_code = #{goodCode}
+    </select>
+</mapper>

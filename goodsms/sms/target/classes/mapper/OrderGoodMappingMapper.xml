@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.OrderGoodMappingMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.OrderGoodMapping">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="order_id" jdbcType="VARCHAR" property="orderId"/>
+        <result column="gooder_code" jdbcType="VARCHAR" property="gooderCode"/>
+        <result column="good_code" jdbcType="VARCHAR" property="goodCode"/>
+        <result column="good_name" jdbcType="VARCHAR" property="goodName"/>
+        <result column="commodity_code" jdbcType="VARCHAR" property="commodityCode"/>
+        <result column="good_model" jdbcType="VARCHAR" property="goodModel"/>
+        <result column="org_code" jdbcType="VARCHAR" property="orgCode"/>
+        <result column="provider_code" jdbcType="VARCHAR" property="providerCode"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="purchase_number" jdbcType="INTEGER" property="purchaseNumber"/>
+        <result column="rate" jdbcType="VARCHAR" property="rate"/>
+        <result column="origin_price" jdbcType="DECIMAL" property="originPrice"/>
+        <result column="rate_price" jdbcType="DECIMAL" property="ratePrice"/>
+        <result column="amount" jdbcType="DECIMAL" property="amount"/>
+        <result column="rate_amount" jdbcType="DECIMAL" property="rateAmount"/>
+        <result column="is_pay" jdbcType="INTEGER" property="isPay"/>
+        <result column="create_id" jdbcType="VARCHAR" property="createId"/>
+        <result column="create_name" jdbcType="VARCHAR" property="createName"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="modify_id" jdbcType="VARCHAR" property="modifyId"/>
+        <result column="modify_name" jdbcType="VARCHAR" property="modifyName"/>
+        <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate"/>
+        <result column="auditing_id" jdbcType="VARCHAR" property="auditingId"/>
+        <result column="auditing_name" jdbcType="VARCHAR" property="auditingName"/>
+        <result column="auditing_date" jdbcType="TIMESTAMP" property="auditingDate"/>
+        <result column="place_id" jdbcType="VARCHAR" property="placeId"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+    </resultMap>
+
+
+
+    <select id="selectByGoodCode" parameterType="String" resultType="String">
+        SELECT order_id
+        FROM o_order_good_mapping
+        WHERE good_code = #{goodCode}
+    </select>
+
+    <select id="selectMapperByOrderId" parameterType="String" resultMap="BaseResultMap">
+        SELECT *
+        FROM o_order_good_mapping
+        WHERE order_id = #{orderId} ORDER BY id
+    </select>
+
+    <update id="updateGoodMapping">
+        UPDATE o_order_good_mapping
+        SET status = #{purchaseStatus}
+        WHERE id = #{purchaseLineCode}
+    </update>
+
+    <delete id="deleteByOrderId" parameterType="String">
+        DELETE FROM o_order_good_mapping
+        WHERE order_id = #{orderId}
+    </delete>
+
+    <resultMap id="PurchaseDetailResultMap" type="com.nice.good.vo.PurchaseDetailVo">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="good_code" jdbcType="VARCHAR" property="goodCode"/>
+        <result column="good_name" jdbcType="VARCHAR" property="goodName"/>
+        <result column="commodity_code" jdbcType="VARCHAR" property="commodityCode"/>
+        <result column="good_model" jdbcType="VARCHAR" property="goodModel"/>
+        <result column="purchase_number" jdbcType="INTEGER" property="purchaseNumber"/>
+        <result column="receive_num" jdbcType="INTEGER" property="receiveNum"/>
+        <result column="purchase_code" jdbcType="INTEGER" property="purchaseCode"/>
+        <result column="no_arrive_num" jdbcType="INTEGER" property="noArriveNum"/>
+        <result column="rough_weight" jdbcType="INTEGER" property="rWeight"/>
+        <result column="bulk" jdbcType="INTEGER" property="bulk"/>
+        <result column="is_quality" jdbcType="INTEGER" property="isQuality"/>
+
+    </resultMap>
+
+    <select id="selectDetailByOrderId" parameterType="String" resultMap="PurchaseDetailResultMap">
+        SELECT
+            mapping.id,
+            mapping.good_name,
+            mapping.good_code,
+            mapping.commodity_code,
+            mapping.good_model,
+            mapping.purchase_number,
+            orders.purchase_code,
+            detail.receive_num,
+            good.rough_weight,
+            good.bulk,
+            config.is_quality
+        FROM o_order_good_mapping AS mapping
+            LEFT JOIN o_receive_detail AS detail
+                ON mapping.id = detail.purchase_line_code
+            LEFT JOIN o_order AS orders
+                ON mapping.order_id = orders.order_id
+            LEFT JOIN g_good AS good ON mapping.good_code = good.good_code
+            LEFT JOIN g_good_config AS config ON good.good_id = config.good_id
+        WHERE mapping.order_id = #{orderId} AND orders.order_status IN (1, 2)
+    </select>
+
+
+    <select id="selectById" parameterType="Integer" resultMap="BaseResultMap">
+        SELECT *
+        FROM o_order_good_mapping
+        WHERE id = #{id}
+    </select>
+
+    <update id="updateStatusById">
+        UPDATE o_order_good_mapping
+        SET status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectMapperByPurchaseCode" parameterType="String" resultMap="BaseResultMap">
+        SELECT *
+        FROM o_order_good_mapping WHERE order_id=(SELECT order_id FROM o_order WHERE purchase_code=#{purchaseCode})
+    </select>
+
+
+</mapper>

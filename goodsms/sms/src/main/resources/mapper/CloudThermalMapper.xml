@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.CloudThermalMapper">
+  <resultMap id="BaseResultMap" type="com.nice.good.model.CloudThermal">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="cloud_id" jdbcType="VARCHAR" property="cloudId" />
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="thermal_code" jdbcType="VARCHAR" property="thermalCode" />
+    <result column="carrier_code" jdbcType="VARCHAR" property="carrierCode" />
+    <result column="gooder_code" jdbcType="VARCHAR" property="gooderCode" />
+    <result column="place_number" jdbcType="VARCHAR" property="placeNumber" />
+    <result column="taobao_status" jdbcType="INTEGER" property="taobaoStatus" />
+    <result column="print_user" jdbcType="VARCHAR" property="printUser" />
+    <result column="third_account" jdbcType="VARCHAR" property="thirdAccount" />
+    <result column="third_password" jdbcType="VARCHAR" property="thirdPassword" />
+    <result column="authorization_code2" jdbcType="VARCHAR" property="authorizationCode2" />
+    <result column="authorization_code3" jdbcType="VARCHAR" property="authorizationCode3" />
+    <result column="shop_name" jdbcType="VARCHAR" property="shopName" />
+    <result column="parcel_kind" jdbcType="VARCHAR" property="parcelKind" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="district" jdbcType="VARCHAR" property="district" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="create_id" jdbcType="VARCHAR" property="createId" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="modifier" jdbcType="VARCHAR" property="modifier" />
+    <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+  </resultMap>
+</mapper>

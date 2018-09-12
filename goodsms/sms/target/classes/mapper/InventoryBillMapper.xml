@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.good.dao.InventoryBillMapper">
+    <resultMap id="BaseResultMap" type="com.nice.good.model.InventoryBill">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="inventory_bill_id" jdbcType="VARCHAR" property="inventoryBillId"/>
+        <result column="source_bill_code" jdbcType="VARCHAR" property="sourceBillCode"/>
+        <result column="inventory_bill_code" jdbcType="VARCHAR" property="inventoryBillCode"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="inventory_status" jdbcType="INTEGER" property="inventoryStatus"/>
+        <result column="inventory_type" jdbcType="INTEGER" property="inventoryType"/>
+        <result column="is_blind_inventory" jdbcType="INTEGER" property="isBlindInventory"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_id" jdbcType="VARCHAR" property="createId"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="modify_id" jdbcType="VARCHAR" property="modifyId"/>
+        <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate"/>
+        <result column="place_id" jdbcType="VARCHAR" property="placeId"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+    </resultMap>
+
+
+    <select id="selectInventoryBillByKeyId" parameterType="String" resultMap="BaseResultMap">
+        SELECT *
+        FROM k_inventory_bill
+        WHERE inventory_bill_id = #{inventory_bill_id}
+    </select>
+
+    <select id="selectInventoryStatus" parameterType="String" resultType="Integer">
+        SELECT inventory_status
+        FROM k_inventory_bill
+        WHERE inventory_bill_id = #{inventoryBillId}
+    </select>
+
+    <select id="selectMaxId" resultType="Integer">
+        SELECT MAX(id)
+        FROM k_inventory_bill
+    </select>
+
+
+    <select id="selectInventoryBill" resultMap="BaseResultMap">
+        SELECT *
+        FROM k_inventory_bill
+        <where>
+            <if test="inventoryBillCode != null and inventoryBillCode != ''">
+                AND inventoryBillCode LIKE CONCAT('%', #{inventoryBillCode}, '%')
+            </if>
+            <if test="sourceBillCode != null and sourceBillCode != ''">
+                AND sourceBillCode LIKE CONCAT('%', #{sourceBillCode}, '%')
+            </if>
+            <if test="inventoryStatus != null">
+                AND inventory_status = #{inventoryStatus}
+            </if>
+            <if test="inventoryType != null">
+                AND inventory_type = #{inventoryType}
+            </if>
+            <if test="isBlindInventory != null">
+                AND is_blind_inventory = #{isBlindInventory}
+            </if>
+            <if test="remark != null and remark != ''">
+                AND remark LIKE CONCAT('%', #{remark}, '%')
+            </if>
+            <if test="createId != null and createId != ''">
+                AND create_id LIKE CONCAT('%', #{createId}, '%')
+            </if>
+            <if test="createDateStart != null and createDateEnd !=null">
+                AND create_date BETWEEN #{createDateStart, jdbcType =TIMESTAMP} AND #{createDateEnd, jdbcType=TIMESTAMP}
+            </if>
+            <if test="modifyId != null and modifyId != ''">
+                AND modify_id LIKE CONCAT('%', #{modifyId}, '%')
+            </if>
+            <if test="modifyDateStart != null and modifyDateEnd !=null">
+                AND modify_date BETWEEN #{modifyDateStart, jdbcType =TIMESTAMP} AND #{modifyDateEnd, jdbcType=TIMESTAMP}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectSumDifferentByBillId" parameterType="String" resultType="Integer">
+        SELECT sum(abs(diff_quantity))
+        FROM k_inventory_bill_detail
+        WHERE inventory_bill_id = #{inventoryBillId}
+    </select>
+
+    <select id="selectInventoryBillCode" parameterType="String" resultMap="BaseResultMap">
+        SELECT * FROM k_inventory_bill WHERE inventory_bill_code=#{inventoryBillCode}
+    </select>
+
+
+</mapper>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nice.miniprogram.dao.UserMapper">
+    <resultMap id="BaseResultMap" type="com.nice.miniprogram.model.User">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="account" jdbcType="VARCHAR" property="account"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="open_id" jdbcType="VARCHAR" property="openId"/>
+        <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
+        <result column="picture" jdbcType="VARCHAR" property="picture"/>
+        <result column="sys_user_id" jdbcType="VARCHAR" property="sysUserId"/>
+        <result column="anchor_platform" jdbcType="VARCHAR" property="anchorPlatform"/>
+        <result column="anchor_uid" jdbcType="VARCHAR" property="anchorUid"/>
+        <result column="anchor_true_name" jdbcType="VARCHAR" property="anchorTrueName"/>
+        <result column="anchor_phone" jdbcType="VARCHAR" property="anchorPhone"/>
+        <result column="anchor_style" jdbcType="VARCHAR" property="anchorStyle"/>
+        <result column="fans_age_group" jdbcType="VARCHAR" property="fansAgeGroup"/>
+        <result column="fans_consuming_ability" jdbcType="VARCHAR" property="fansConsumingAbility"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="createtime" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime"/>
+        <result column="user_type" jdbcType="INTEGER" property="userType"/>
+        <result column="if_anchor" jdbcType="INTEGER" property="ifAnchor"/>
+        <result column="login_num" jdbcType="INTEGER" property="loginNum"/>
+        <result column="anchor_sex" jdbcType="INTEGER" property="anchorSex"/>
+        <result column="org_name" jdbcType="VARCHAR" property="orgName" />
+    </resultMap>
+
+    <select id="selectByCount" parameterType="String" resultType="int">
+    SELECT COUNT(*) FROM x_user x where account=#{account}
+  </select>
+
+    <select id="findPassword" parameterType="String" resultType="String">
+    select password from x_user where account=#{account}
+  </select>
+
+    <select id="findUser" parameterType="String" resultMap="BaseResultMap">
+        select * from x_user where account=#{account}
+    </select>
+
+    <update id="updateNum" parameterType="com.nice.miniprogram.model.User">
+      update x_user set login_num=#{loginNum} where id=#{id}
+    </update>
+
+
+    <update id="updateUserInfo" parameterType="com.nice.miniprogram.model.User">
+        update x_user set modifier=#{modifier},modifytime=#{modifytime}
+        <if test="openId != null and openId !=''">
+            ,open_id = #{openId}
+        </if>
+        <if test="nickName != null and nickName !=''">
+            ,nick_name = #{nickName}
+        </if>
+        <if test="picture != null and picture !=''">
+            ,picture = #{picture}
+        </if>
+        <if test="sysUserId != null and sysUserId !=''">
+            ,sys_user_id = #{sysUserId}
+        </if>
+        <if test="anchorPlatform != null and anchorPlatform !=''">
+            ,anchor_platform = #{anchorPlatform}
+        </if>
+        <if test="anchorUid != null and anchorUid !=''">
+            ,anchor_uid = #{anchorUid}
+        </if>
+        <if test="anchorTrueName != null and anchorTrueName !=''">
+            ,anchor_true_name = #{anchorTrueName}
+        </if>
+        <if test="anchorPhone != null and anchorPhone !=''">
+            ,anchor_phone = #{anchorPhone}
+        </if>
+        <if test="anchorStyle != null and anchorStyle !=''">
+            ,anchor_style = #{anchorStyle}
+        </if>
+        <if test="fansAgeGroup != null and fansAgeGroup !=''">
+            ,fans_age_group = #{fansAgeGroup}
+        </if>
+        <if test="fansConsumingAbility != null and fansConsumingAbility !=''">
+            ,fans_consuming_ability = #{fansConsumingAbility}
+        </if>
+        <if test="remark != null and remark !=''">
+            ,remark = #{remark}
+        </if>
+        <if test="userType != null and userType !=''">
+            ,user_type = #{userType}
+        </if>
+        <if test="orgName != null and orgName !=''">
+            ,org_name = #{orgName}
+        </if>
+        where id=#{id}
+    </update>
+
+</mapper>
